@@ -1,6 +1,5 @@
 # Self-Balancing-Inverted-Pendelum
-Modeling and simulation of an inverted pendulum that is self balanced with two reaction wheels
-Control is still not perfect, will be working on it soon. 
+Modeling and simulation of an inverted pendulum that is self balanced with two reaction wheels. The control algorith is still not perfect but I will be working on it soon. 
 
 #### Demo of dynamics:
 
