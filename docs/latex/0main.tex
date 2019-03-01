@@ -1,0 +1,182 @@
+ \documentclass[a4paper,twoside]{article}
+
+%% Language and font encodings
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=2.5cm,right=2.5cm,marginparwidth=0.5cm]{geometry}
+
+\usepackage{amsmath}			%Paquete matemático
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\usepackage{hyperref}		%Paquete empleado para colocar hipervinculos
+\hypersetup{
+	colorlinks = true,
+	linkcolor = black,
+}
+
+\usepackage{eurosym}
+\usepackage{pdfpages}			%Sirve para incluir PDF en el documento
+\usepackage{anysize}			%Podremos colocar imagenes de cualquier tamaño
+\usepackage{subfig}				%Nos permitira colocar varias imagenes en una figura
+\usepackage{float}				%Podremos crear y colocar boxes donee queramos
+\usepackage[export]{adjustbox}
+
+%Colocamos cabeceras y pies de pagina
+%(CONSULTA: http://edicionesoniricas.com/maquetar-latex-encabezados-pies-pagina/)
+%(CONSULTA2: https://es.sharelatex.com/learn/Headers_and_footers)
+%\bfseries es análogo a \textbf{}
+% \leftmark-> Adds name and number of the current top-level structure (section for article) in uppercase letters.
+%\rightmark-> Adds name and number of the current next to top-level structure (subsection for article) in uppercase letters.
+\usepackage{fancyhdr}		%Paquetes necesarios
+\pagestyle{fancy}			%Borra los parametros por defecto
+\fancyhf{}
+\fancyhead[RO,LE]{\bfseries\thepage}
+\fancyhead[LO,RE]{\bfseries\rightmark}
+%Nos aseguramos de que en las paginas plain, no haya ni cabeceras ni lineas
+\fancypagestyle{plain}
+{
+	\fancyhead{} % elimina cabeceras en paginas "plain"
+	\renewcommand{\headrulewidth}{0pt} % así como la raya
+}
+
+%Definimos las lineas divisoras de las cabeceras y pie de pagina
+\renewcommand{\headrulewidth}{1pt}	%Define el grosor de la línea de head
+\renewcommand{\footrulewidth}{0pt}		%Define el grosor de la linea foot (Si no queremos linea, 0pt)
+\addtolength{\headheight}{0.5pt} % espacio para la raya
+
+%Librerias para introducir código de Matlab
+%\usepackage{bigfoot} % to allow verbatim in footnote
+\usepackage[numbered,framed]{matlab-prettifier}
+
+\lstset{
+	style              = Matlab-editor,
+	basicstyle         = \mlttfamily,
+	escapechar         = ",
+	mlshowsectionrules = true
+}
+
+% %%%%%%%%% INTRODUCIR CODIGO DE C %%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{xcolor} % for setting colors
+
+% set the default code style
+%:Paquete para modificar los colores de diferentes elementos del codigo
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+%Definimos el estilo del codigo de C
+\lstdefinestyle{CStyle}{
+	backgroundcolor=\color{backgroundColour},
+	commentstyle=\color{mGreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{mGray},
+	stringstyle=\color{mPurple},
+	basicstyle=\footnotesize,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	keepspaces=true,
+	numbers=left,
+	numbersep=5pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=2,
+	language=C,
+}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pie de pagina
+%\fancyfoot{} % limpia el pie
+\fancyfoot[C]{- \thepage -} % número de página centrado
+
+%Nos generará texto para pruebas de maquetado
+\usepackage{lipsum}
+
+% To include code
+\usepackage{minted}
+%\usemintedstyle{borland}
+\usepackage{mdframed}
+
+% To can use multirow
+\usepackage{multirow}
+
+% Se varia el limite de colimnas de latex
+\setcounter{MaxMatrixCols}{11}
+\usepackage{lscape}
+%----------------------------------------------------------------------------------------------------------------------------------
+\begin{document}
+\begin{titlepage}
+ \centering
+ \Huge{\textbf{Péndulo Inverso controlado por voltantes de inercia}} \\
+ \Huge{\textit{Trabajo Fin de Grado}}\\
+
+ \vspace{1cm}
+ \LARGE{Grado en Ingeniería Electrónica, Mecatrónica y Robótica}\\
+ \rule{\textwidth}{0.1mm}
+\Large{\tableofcontents}
+ \vspace{2cm}
+ \rule{\textwidth}{0.1mm}
+ \Large{\textbf{Autor:} Haes-Ellis, Richard Mark}
+\end{titlepage}
+\newpage
+
+% %%%%%%%%%%%   INTRODUCCION %%%%%%%%%%%%%%%%%%
+\section{Introducción}
+En este proyecto se desarrollara un HID(\textit{Human Interface Device}) para el control del puntero de un host, en este caso un ordenador, haciendo  uso del sensorpack \textit{BOOSTXL-SENSORS} y el microcontrolador \textit{Tiva TM4C1294}, ambos del fabricante \textit{Texas Instruments}.\\
+
+\subsection{Descripcion del hardware empleado}
+\subsection{Descripcion del software empleado}
+
+\section{Funcionamiento del proyecto}
+\begin{itemize}
+\item Desarrollo de un HID con el microcontrolador.
+\item Empleo del Boosterpack para tomar la definir la posicion del puntero en la pantalla.
+\item Filtrado de las medidas tomadas a nivel de software.
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{Host mode}: Permite conectar un teclado o un raton al microcontrolador.
+	\item \textbf{Device mode}:Establece una comunicacion con el PC a traves del USB.
+	\item \textbf{On-The-Go mode}: Permite multiplexar el USB entre hosts y dispositivos.
+\end{itemize}
+
+\section{Código de programación desarrollado}
+
+\begin{itemize}
+\item Instanciación de librerías
+\item Declaración de variables
+\item Funciones
+\item Codigo principal
+\end{itemize}
+
+\subsection{Instanciacion de librerias}
+
+\begin{listing}[h!]
+\inputminted[linenos,breaklines,frame=lines,framesep=2mm]{c}{codes/librerias.c}
+\caption{Instanciacion de librerías}
+\end{listing}
+
+\vspace{3cm}
+
+\subsection{Funciones empleadas}
+\begin{itemize}
+  \item \textbf{SysTickIntHandler}:
+    \begin{listing}[h!]
+    \inputminted[linenos,breaklines,frame=lines,framesep=2mm]{c}{codes/fun_tick.c}
+    \caption{Defines del código}
+    \end{listing}
+
+\vspace{4cm}
+
+\end{mdframed}
+
+\end{document}
