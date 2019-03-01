@@ -1,0 +1,13 @@
+# Ignore
+Debug/*
+.launches
+
+docs/latex/*.aux
+docs/latex/*.fdb_latexmk
+docs/latex/*.fls
+docs/latex/*.out
+docs/latex/*.pyg
+docs/latex/*.synctex.gz
+docs/latex/*.log
+docs/latex/*.toc
+docs/latex/_minted-0main/*
