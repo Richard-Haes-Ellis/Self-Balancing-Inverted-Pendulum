@@ -3,4 +3,4 @@ Modeling and simulation of an inverted pendulum that is self balanced with two r
 
 #### Demo of dynamics:
 
-![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/Docs/Images/Animation.gif)
+![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/Animation.gif)
