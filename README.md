@@ -15,6 +15,6 @@ Note the the model has the test bech attached to it, this is only for testing pu
 
 #### Demo of dynamics:
 
-The parameters of the system were assumed and are not from the model, this animation demostrates the speeding up of the wheel form the ground and a suddent deacceleration that results in a torque on the pivot that ultimatly lifts the pendulum up. 
+The parameters of the system were assumed and are not from the model, this animation demostrates the speeding up of the wheel from the ground position and followed by a sudden deacceleration that results in a torque applyed on the pivot point that ultimatly lifts the pendulum up. 
 
 ![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/Animation.gif)
