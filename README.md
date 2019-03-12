@@ -3,7 +3,7 @@ Modeling and simulation of an inverted pendulum that is self balanced with two r
 
 #### CAD model of the system: 
 
-![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/foto.jpeg)
+![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/foto.png)
 
 #### Demo of dynamics:
 
