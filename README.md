@@ -11,6 +11,8 @@ And an image preview of it:
 
 ![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/foto.png)
 
+Note the the model has the test bech attached to it, this is only for testing puposes to try out only one axis at the time.
+
 #### Demo of dynamics:
 
 ![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/Animation.gif)
