@@ -3,6 +3,11 @@ Modeling and simulation of an inverted pendulum that is self balanced with two r
 
 #### CAD model of the system: 
 
+The system was created in FreeCAD and all the files can be found in the link below:
+https://grabcad.com/library/self-balancing-stick-1
+
+And an image preview of it:
+
 ![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/foto.png)
 
 #### Demo of dynamics:
