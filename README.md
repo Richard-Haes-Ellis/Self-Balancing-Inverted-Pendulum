@@ -11,7 +11,7 @@ https://grabcad.com/library/self-balancing-stick-1
 
 And an image preview of it:
 
-![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/foto.png)
+![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/CADmodel.gif)
 
 Note the the model has the test bech attached to it, this is only for testing puposes to try out only one axis at the time.
 
