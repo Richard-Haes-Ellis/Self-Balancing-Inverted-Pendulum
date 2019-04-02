@@ -2,6 +2,8 @@
 Debug/*
 .launches
 
+CAD/*.FCstd1
+
 docs/latex/*.aux
 docs/latex/*.fdb_latexmk
 docs/latex/*.fls
