@@ -2,7 +2,7 @@
 Debug/*
 .launches
 
-CAD/*.FCstd1
+CAD/*.FCStd1
 
 docs/latex/*.aux
 docs/latex/*.fdb_latexmk
