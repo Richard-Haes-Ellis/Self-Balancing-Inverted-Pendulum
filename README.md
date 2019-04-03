@@ -23,9 +23,6 @@ For the encoder I have used the AS5060 magnetic encoder. I purchased the chips o
 
 The board were designed in EasyEDA, and the Greber files are available to download.
 
-![](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/PCB_Encoder-board.png =300x300)
-
-
 #### Demo of dynamics of a similar system:
 
 The parameters of the system were assumed and are not from the model, this animation demostrates the speeding up of the wheel from the ground position and followed by a sudden deacceleration that results in a torque applyed on the pivot point that ultimatly lifts the pendulum up.
