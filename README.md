@@ -23,7 +23,7 @@ For the encoder I have used the AS5060 magnetic encoder. I purchased the chips o
 
 The board were designed in EasyEDA, and the Greber files are available to download.
 
-![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/PCB_Encoder-board.png)
+![Alt text](https://github.com/richaeell/Self-Balancing-Inverted-Pendelum/blob/master/docs/Images/PCB_Encoder-board.png=300x300)
 
 
 #### Demo of dynamics of a similar system:
