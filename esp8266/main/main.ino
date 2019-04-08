@@ -6,15 +6,22 @@
 #define STAPSK  "Selba123"
 #endif
 
+int i= 0;
+
 IPAddress local_IP(192,168,4,20);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
+IPAddress broadcastIp(192,168,4,255);
+
+
+
 unsigned int localPort = 8888;      // local port to listen on
+unsigned int broadcastPort = 5005;
 
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet,
-char  ReplyBuffer[] = "acknowledged\r\n";       // a string to send back
+char  ReplyBuffer[] = "Hello \r\n";       // a string to send back
 
 WiFiUDP Udp;
 
@@ -24,40 +31,49 @@ void setup() {
   Serial.print("Setting soft-AP ... ");
   Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
   Serial.println(WiFi.softAP(STASSID,STAPSK) ? "Ready" : "Failed!");
-
+  Serial.print("ESP8266 on IP: ");
+  Serial.println(WiFi.softAPIP());
   Serial.printf("UDP server on port %d\n", localPort);
   Udp.begin(localPort);
 }
 
 void loop() {
   // if there's data available, read a packet
-  int packetSize = Udp.parsePacket();
-  if (packetSize) {
-    Serial.print("Received packet of size ");
-    Serial.println(packetSize);
-    Serial.print("From ");
-    IPAddress remote = Udp.remoteIP();
-    for (int i = 0; i < 4; i++) {
-      Serial.print(remote[i], DEC);
-        if (i < 3) {
-        Serial.print(".");
-      }
-    }
-    Serial.print(", port ");
-    Serial.println(Udp.remotePort());
-      // read the packet into packetBufffer
-    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    Serial.println("Contents:");
-    Serial.println(packetBuffer);
-      // send a reply, to the IP address and port that sent us the packet we received
-      Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-    Udp.write(ReplyBuffer);
-    Udp.endPacket();
-  }
-  delay(10);
+  // int packetSize = Udp.parsePacket();
+  // if (packetSize) {
+  //   Serial.print("Received packet of size ");
+  //   Serial.println(packetSize);
+  //   Serial.print("From ");
+  //   IPAddress remote = Udp.remoteIP();
+  //   for (int i = 0; i < 4; i++) {
+  //     Serial.print(remote[i], DEC);
+  //       if (i < 3) {
+  //       Serial.print(".");
+  //     }
+  //   }
+  //   Serial.print(", port ");
+  //   Serial.println(Udp.remotePort());
+  //     // read the packet into packetBufffer
+  //   Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+  //   Serial.println("Contents:");
+  //   Serial.println(packetBuffer);
+  //     // send a reply, to the IP address and port that sent us the packet we received
+  //   Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+  //   Udp.write(ReplyBuffer);
+  //   Udp.endPacket();
+  // }
+
+  sprintf(ReplyBuffer,"Hello %d\r\n",i);
+  i++;
+  // Broadcast data
+  Udp.beginPacket(broadcastIp,broadcastPort);
+  Udp.write(ReplyBuffer);
+  Udp.endPacket();
+
+  delay(100);
 }
   /*
     test (shell/netcat):
     --------------------
-  	  nc -u 192.168.esp.address 8888
+  	  nc -kluvw 0  *PORT*
   */
