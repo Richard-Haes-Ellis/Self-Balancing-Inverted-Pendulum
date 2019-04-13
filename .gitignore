@@ -4,6 +4,8 @@ Debug/*
 
 *.FCStd1
 
+esp8266/build
+
 
 docs/latex/*.aux
 docs/latex/*.fdb_latexmk
