@@ -2,78 +2,88 @@
 #include <WiFiUdp.h>
 #include <Arduino.h>
 
-#ifndef STASSID
 #define STASSID "Selba"
 #define STAPSK  "Selba123"
-#endif
 
-int i= 0;
+
 
 IPAddress local_IP(192,168,4,20);
 IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
-
 IPAddress broadcastIp(192,168,4,255);
-unsigned int localPort = 8888;      // local port to listen on
-
 unsigned int broadcastPort = 5005;
 
-// buffers for receiving and sending data
-char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet,
-char  ReplyBuffer[] = "Hello \r\n";       // a string to send back
+char  ReplyBuffer[100];  // Buffers forsending data 
 
 WiFiUDP Udp;
+
+
+uint8_t encoderPin_x = 0; // D3 == 0
+uint32_t tOn_x = 0;
+uint32_t period_x = 0;
+uint32_t startTime_x = 0;
+uint32_t deltaT = 0;
+uint32_t prv_Time = 0;
+float phi_x = 0;
+float phi_x_dot = 0;
+float prv_phi_x = 0;
+float k = 0;
+
+
+
+void encoder_x_Handler(){
+  uint8_t currState = 0;
+  if(digitalRead(encoderPin_x)){
+    period_x = micros() - startTime_x;
+    startTime_x = micros();
+  }else{
+    tOn_x = micros() - startTime_x;
+  }
+}
 
 void setup() {
   Serial.begin(115200);
 
-  Serial.print("Setting soft-AP ... ");
-  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
-  Serial.println(WiFi.softAP(STASSID,STAPSK) ? "Ready" : "Failed!");
-  Serial.print("ESP8266 on IP: ");
-  Serial.println(WiFi.softAPIP());
-  Serial.printf("UDP server on port %d\n", localPort);
-  Udp.begin(localPort);
+  delay(5);
 
-  Serial.print("Broadcasting on port: ");
-  Serial.println(broadcastPort);
+  pinMode(encoderPin_x,INPUT);
+  attachInterrupt(digitalPinToInterrupt(encoderPin_x),encoder_x_Handler,CHANGE);
+
+
+  // NETWORK AND UDP CONFIG // 
+  // WiFi.softAPConfig(local_IP, gateway, subnet);
+  // Serial.println(WiFi.softAP(STASSID,STAPSK) ?  "Soft-AP Ready" : "soft-AP Failed!");
+  // Udp.begin(localPort);
+  // Serial.printf("Wifi: %s \nPassword: %s\n",STASSID,STAPSK);
+  // Serial.print("Broadcasting on port: ");
+  // Serial.println(broadcastPort);
 
 }
 
 void loop() {
-  // if there's data available, read a packet
-  // int packetSize = Udp.parsePacket();
-  // if (packetSize) {
-  //   Serial.print("Received packet of size ");
-  //   Serial.println(packetSize);
-  //   Serial.print("From ");
-  //   IPAddress remote = Udp.remoteIP();
-  //   for (int i = 0; i < 4; i++) {
-  //     Serial.print(remote[i], DEC);
-  //       if (i < 3) {
-  //       Serial.print(".");
-  //     }
-  //   }
-  //   Serial.print(", port ");
-  //   Serial.println(Udp.remotePort());
-  //     // read the packet into packetBufffer
-  //   Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-  //   Serial.println("Contents:");
-  //   Serial.println(packetBuffer);
-  //     // send a reply, to the IP address and port that sent us the packet we received
-  //   Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-  //   Udp.write(ReplyBuffer);
-  //   Udp.endPacket();
-  // }
+  if(period_x!=0){
+    phi_x =2*PI*k + 2*PI*((float)tOn_x/(float)period_x);
+  }
 
-  sprintf(ReplyBuffer,"Hello %d\r\n",i);
-  i++;
+  
+  deltaT = micros()-prv_Time;
+  if(deltaT>0){
+    phi_x_dot = (prv_phi_x - phi_x)/deltaT;
+  }
+  prv_Time = micros();
+  prv_phi_x = phi_x;
+
+  Serial.print(phi_x);
+  Serial.print(" ");
+  Serial.printf("%f \n\r",phi_x_dot);
+
+
+
   // Broadcast data
-  Udp.beginPacket(broadcastIp,broadcastPort);
-  Udp.write(ReplyBuffer);
-  Udp.endPacket();
+  // Udp.beginPacket(broadcastIp,broadcastPort);
+  // Udp.write(ReplyBuffer);
+  // Udp.endPacket();
 
-  delay(100);
 }
   /*
     test (shell/netcat):
