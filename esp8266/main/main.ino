@@ -1,5 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#include <Arduino.h>
 
 #ifndef STASSID
 #define STASSID "Selba"
@@ -13,10 +14,8 @@ IPAddress gateway(192,168,4,1);
 IPAddress subnet(255,255,255,0);
 
 IPAddress broadcastIp(192,168,4,255);
-
-
-
 unsigned int localPort = 8888;      // local port to listen on
+
 unsigned int broadcastPort = 5005;
 
 // buffers for receiving and sending data
@@ -35,6 +34,10 @@ void setup() {
   Serial.println(WiFi.softAPIP());
   Serial.printf("UDP server on port %d\n", localPort);
   Udp.begin(localPort);
+
+  Serial.print("Broadcasting on port: ");
+  Serial.println(broadcastPort);
+
 }
 
 void loop() {
