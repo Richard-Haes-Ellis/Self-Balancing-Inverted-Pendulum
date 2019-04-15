@@ -6,6 +6,10 @@ Debug/*
 
 esp8266/build
 
+.vscode
+.vscode/*
+*.ipch
+
 
 docs/latex/*.aux
 docs/latex/*.fdb_latexmk
