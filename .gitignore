@@ -4,8 +4,6 @@ Debug/*
 
 *.FCStd1
 
-esp8266/main/build
-
 .vscode
 .vscode/*
 *.ipch
@@ -20,3 +18,4 @@ docs/latex/*.synctex.gz
 docs/latex/*.log
 docs/latex/*.toc
 docs/latex/_minted-0main/*
+esp8266/main/build/*
