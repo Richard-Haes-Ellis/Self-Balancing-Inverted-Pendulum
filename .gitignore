@@ -4,16 +4,12 @@ Debug/*
 
 *.FCStd1
 
-esp8266/build
-<<<<<<< HEAD
-.vscode/*
-=======
+esp8266/main/build
 
 .vscode
 .vscode/*
 *.ipch
 
->>>>>>> origin/encoder_test
 
 docs/latex/*.aux
 docs/latex/*.fdb_latexmk
