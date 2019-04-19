@@ -5,7 +5,15 @@ Debug/*
 *.FCStd1
 
 esp8266/build
+<<<<<<< HEAD
 .vscode/*
+=======
+
+.vscode
+.vscode/*
+*.ipch
+
+>>>>>>> origin/encoder_test
 
 docs/latex/*.aux
 docs/latex/*.fdb_latexmk

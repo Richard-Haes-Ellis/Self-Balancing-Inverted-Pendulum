@@ -1,0 +1,23 @@
+/home/pirana/Repos/Self-Balancing-Inverted-Pendulum/esp8266/build/core/cont_util.c.o: \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/cores/esp8266/cont_util.c \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/cores/esp8266/cont.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/string.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/_ansi.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/newlib.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/config.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/machine/ieeefp.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/features.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/xtensa/config/core-isa.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/reent.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/_ansi.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/_types.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/machine/_types.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/machine/_default_types.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/lock.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/cdefs.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/string.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/include/ets_sys.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/include/c_types.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/stdint.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/libc/xtensa-lx106-elf/include/sys/_intsup.h \
+ /home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/tools/sdk/include/eagle_soc.h
