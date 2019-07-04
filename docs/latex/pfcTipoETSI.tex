@@ -1,0 +1,236 @@
+%:Clase del documento
+\documentclass[fontsize=10pt, Myfinal=true, twoside, numbers=noenddot]{scrbook}
+%Minion=true, English=true, Myfinal=true
+
+%:Paquete de estilos propuesto
+\usepackage{libroETSI}
+ 
+\usepackage{showexpl}
+
+%:Paquete específico para cargar tikz (y sus librerías) y pgfplots
+\usepackage{dtsc-creafig}
+
+%:Paquete para notaciones específicas
+\usepackage{notacion}
+
+%:Paquete para incorporar aspectos concretos de la edición
+\usepackage{edicionPFC}
+
+%:Para modificar fácilmente la fuente del texto.
+\makeatletter
+\ifdtsc@Minion % Queremos utilizar la fuente Minion y lo hemos declarado al principio
+	\ifluatex
+		\setmainfont[Renderer=Basic, Ligatures=TeX,	% Fuente del texto 
+		Scale=1.01,
+		]{Minion Pro}
+   		% En este caso conviene modificar ligeramente el tamaño de las fuentes matemáticas
+		\DeclareMathSizes{10}{10.5}{7.35}{5.25}
+		\DeclareMathSizes{10.95}{11.55}{8.08}{5.77}
+		\DeclareMathSizes{12}{12.6}{8.82}{6.3}
+%		\setmainfont[Renderer=Basic, Ligatures=TeX,	% Fuente del texto 
+%		]{Adobe Garamond Pro}
+%		\setmainfont[Renderer=Basic, Ligatures=TeX,	% Fuente del texto 
+%		]{Palatino LT Std}
+	\fi
+\else
+	\ifluatex
+		% Para utilizar la fuente Times New Roman, o alguna otra que se tenga instalada
+		\setmainfont[Renderer=Basic, Ligatures=TeX,	% Fuente del texto 
+		Scale=1.0,
+		]{Times New Roman}
+	\else
+		\usepackage{tgtermes} 	%clone of Times
+		%\usepackage[default]{droidserif}
+		%\usepackage{anttor} 	
+	\fi
+\fi
+\makeatother
+
+%Por si quieren usar bibliografía con BIBER
+%BIBER%%:Para la bibliografía en BIBER, descomentar las líneas siguientes
+%\defbibheading{etsi}[]{%
+%	\chapter*{Bibliografía}%
+%	\chaptermark{Bibliografía} 
+%	\markboth{#1}{#1}}
+%\addbibresource{bibliografiaLibroETSI.bib}
+
+% Ejemplo de Glosario
+\newacronym[type=main]{ETSI}{ETSI}{Escuela Técnica Superior de Ingeniería}
+\newacronym[type=main]{US}{US}{Universidad de Sevilla}
+\newacronym[type=main]{DMC}{DMC}{Canal Discreto sin Memoria}
+
+
+\makeindex
+\makeglossaries %Si no se quiere el glosario, comentar esta línea.
+
+% Formato A4
+\geometry
+{paperheight=297mm,%
+paperwidth=210mm,%
+top=25mm,%
+headsep=8.5mm,%
+includefoot, 
+textheight=240mm, 
+textwidth=150mm, 
+bindingoffset=0mm, 
+twoside}
+
+\usepackage[a4,center]{crop}%para poner las cruces de esquina de página, poner la opción cross
+
+%:Esquema de numeración por defecto
+\setenumerate[1]{label=\normalfont\bfseries{\arabic*.}, leftmargin=*, labelindent=\parindent}
+\setenumerate[2]{label=\normalfont\bfseries{\alph*}), leftmargin=*}
+\setenumerate[3]{label=\normalfont\bfseries{\roman*.}, leftmargin=*}
+\setlist{itemsep=.1em}
+\setlength{\parindent}{1.0 em}
+
+\setcounter{tocdepth}{4}						% El nivel hasta el que se muestra el índice 
+
+
+%:Empieza el documento
+
+\begin{document}
+%:Para incluir toda la referencia bibliográfica aunque no se cite, descomente la siguiente línea
+%\nocite{*}
+
+
+%PORTADA
+%ver edicionPFC.sty para modificaciones
+
+%:Para crear la portada y la portada interior (pagina titular)
+\titulo{Control de un péndulo inverso con voltantes de reacción} %\mbox evita que se divida una palabra al cambiar de línea
+\autor{Richard M. Haes-Ellis}
+\director{Ignacio Alvarado Aldea}
+\titulodirector{Profesor Titular}
+
+\departamento{Dpto. Ingeniería de Sistemas y Automática}
+\centro{Escuela Técnica Superior de Ingeniería}
+\universidad{Universidad de Sevilla}
+\titulacion{Ingeniería Electrónica, Robótica y Mecatrónica}
+\fecha{2019}
+\nombretrabajo{Proyecto Fin de Carrera} %Trabajo Fin de Grado, Proyecto fin de Máster,....
+
+\hypersetup
+	{
+ 	linkcolor=black, %Tocar para poner color en enlaces
+	pdfauthor={\elautor},
+	pdftitle={\nombretrabajo,\eltitulo}, 
+	pdfkeywords={Latex, edición, formato de texto}	
+	 }
+
+\portadaPFC{figuras/LogoUS.pdf}{figuras/LogoTSC.pdf} %logo de la Universidad y logo del departamento, si lo hubiera. Para cambiar el pie de página con los logos, debe editarse el fichero ediciónPFC.sty
+
+%Fin Portada
+
+%:Todo lo que constituye la primera parte del libro que no es el cuerpo del libro en realidad
+\frontmatter
+\pagenumbering{Roman} %Pone la numeración en mayúscula (En español parece que es obligatorio)
+
+%\include{dedicatoria/dedicatoria}%¿Comentar para proyectos/tesis?
+\include{agradecimientos/agradecimientos}
+
+%PFC/PFM/TESIS
+\include{resumen/resumen} 
+
+% Índice abreviado 
+% El índice abreviado se incluye también en algunos libros, con menor detalle que el completo. Descomentar las siguientes líneas.
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasf}{Índice Abreviado}
+\pagestyle{especial}
+\shorttoc{Índice Abreviado}{1}
+
+%Índice normal, el completo
+\cleardoublepage
+\phantomsection
+\pagestyle{especial}
+\tableofcontents
+
+
+\include{notacion/notacion} %No incluir si no se quiere, comentándolo
+
+%:Empieza el contenido del libro
+\mainmatter
+
+%:Página por defecto
+\pagestyle{esitscCD}
+
+%:Los diferentes capítulos, en carpetas separadas
+\input{Cubierta/cubierta}
+%
+\include{introduccion/introduccion}%Guia uso
+%
+\include{estructura/estructura}
+%
+\include{CapituloLibroETSI/CapituloLibroETSI} 
+%
+\include{CapituloProblemasLibroETSI/CapituloProblemasETSI} 
+
+\include{CapituloEstilo/estilolibroetsi}
+% 
+%%:Empezamos con los apéndices, que irían en uno o más ficheros. Es necesario incluir estos ficheros entre el entorno \begin{appendices}....\end{appendices} debido a que se ha deseado utilizar un formato diferente para el título de los apéndices, incluyendo la palabra apéndice, para la numeración de los apéndices, alfabético, y para las cabeceras de las páginas.
+%
+\begin{appendices}
+%
+%% Fichero en el que se incluyen los apéndices
+\include{apendices/apendices} %Ver este fichero para incluir ahí los apéndices.
+%
+\end{appendices}
+%:Fin de la inclusión de apéndices
+
+%:Empieza todo lo que no constituye el cuerpo en si del libro. Todo lo que va detrás
+\backmatter
+
+%:Indice de figuras, coméntese las siguientes líneas si no se desea
+\cleardoublepage
+\phantomsection
+
+%:Para añadir una línea en blanco en el TOC y separar esta lista
+\addtocontents{toc}{\protect\mbox{}\protect\hspace*{0pt}\par}
+\addcontentsline{toc}{listasb}{\listfigurename}
+\pagestyle{especial}
+\listoffigures
+
+%:Indice de tablas, coméntese las siguientes líneas si no se desea
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasb}{\listtablename}
+\pagestyle{especial}
+\listoftables
+
+%:Indice de Programas
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasb}{\lstlistlistingname}
+\pagestyle{especial}
+\lstlistoflistings
+
+%:Bibliografía con biblatex y biber
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasb}{\bibname}
+\pagestyle{especial}
+%BIBER
+%\printbibliography[heading=etsi]
+%BIBTEX
+%\bibliographystyle{IEEEtran}
+\bibliographystyle{amsplain} %flexbib amsplain alpha
+%:Fichero con la bibliografía, BIBTEX
+\bibliography{bibliografiaLibroETSI}
+
+%:Índice alfabético de palabras
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasb}{\indexname}
+\chaptermark{\indexname}
+\printindex
+
+
+%:Acrónimos
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasb}{\glossaryname}
+\chaptermark{\glossaryname}
+\printglossaries
+
+\end{document}

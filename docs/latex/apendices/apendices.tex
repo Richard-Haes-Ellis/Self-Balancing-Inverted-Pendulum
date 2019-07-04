@@ -1,0 +1,58 @@
+% !TEX root =../LibroTipoETSI.tex
+
+
+
+%APENDICE A
+\chapter{Sobre  \LaTeX}\LABAPEN{ApA}
+{Este es un ejemplo de apéndices, el texto es únicamente relleno, para que el lector pueda observar cómo se utiliza}
+%%%%%%%%%%%%%%%%%
+\section{Ventajas de \LaTeX}
+
+El gusto por el \LaTeX\ depende de la forma de trabajar de cada uno. La principal virtud es la facilidad de formatear cualquier texto y la robustez. Incluir títulos, referencias es inmediato.
+%\Blindtext
+%\lipsum
+Las ecuaciones quedan estupendamente, como puede verse en \EQ{Ap1}
+\begin{equation}\LABEQ{Ap1}
+x_{1}=x_{2}.
+\end{equation}
+
+
+\section{Inconvenientes}
+%\Blindtext
+El principal inconveniente de \LaTeX\ radica en la necesidad de aprender un conjunto de comandos para generar los elementos que queremos. Cuando se está acostumbrado a un entorno ``como lo escribo se obtiene'', a veces resulta difícil dar el salto a ``ver'' que es lo que se va a obtener con un determinado comando. 
+
+Por otro lado, en general será muy complicado cambiar el formato para desviarnos de la idea original de sus creadores. No es imposible, pero sí muy difícil. Por ejemplo, con la sentencia siguiente:
+ 
+\begin{lstlisting}[language=,caption={Escritura de una ecuación}, breaklines=true, label=prgA1-01]
+\begin{equation}\LABEQ{Ap2}
+x_{1}=x_{2}
+\end{equation}
+\end{lstlisting}
+obtenemos:
+\begin{equation}\LABEQ{Ap2}
+x_{1}=x_{2}
+\end{equation}
+Esto será siempre así. Aunque, tal vez, esto podría ser una ventaja y no un incoonveniente.
+
+Para una discusión similar sobre el Word\tsp{\textregistered}, ver \APEN{ApB}.
+%\Blindtext
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%APENDICE B
+\chapter{Sobre Microsoft Word\tsp{\textregistered}}\LABAPEN{ApB}
+
+\section{Ventajas del Word\tsp{\textregistered}}
+La ventaja mayor del Word\tsp{\textregistered} es que permite configurar el formato muy fácilmente. Para las ecuaciones,
+\begin{equation}
+x_{1}=x_{2},
+\end{equation}
+tradicionalmente ha proporcionado pésima presentación. Sin embargo, el software adicional Mathtype\tsp{\textregistered} solventó este problema, incluyendo una apariencia muy profesional y cuidada. Incluso permitía utilizar un estilo similar al \LaTeX\xspace. Además, aunque el Word\tsp{\textregistered} incluye sus propios atajos para escribir ecuaciones,  Mathtype\tsp{\textregistered} admite también escritura \LaTeX\xspace. En las últimas versiones de Word\tsp{\textregistered}, sin embargo, el formato de ecuaciones está muy cuidado, con un aspecto similar al de \LaTeX.
+
+
+\section{Inconvenientes de Word\tsp{\textregistered}}
+Trabajar con títulos, referencias cruzadas e índices es un engorro, por no decir nada sobre la creación de una tabla de contenidos. Resulta muy frecuente que alguna referencia quede pérdida o huérfana y aparezca un mensaje en negrita indicando que  no se encuentra. 
+
+Los estilos permiten trabajar bien definiendo la apariencia, pero también puede desembocar en un descontrolado incremento de los mismos. Además, es muy probable que Word\tsp{\textregistered} se quede colgado, sobre todo al trabajar con copiar y pegar de otros textos y cuando se utilizan ficheros de gran extensión, como es el caso de un libro.
+
+%\end{equation}

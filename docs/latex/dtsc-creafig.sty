@@ -1,0 +1,81 @@
+%:Paquete específico para el dibujo. Llama al paquete tikz que es responsable de casi todo
+\usepackage{pgfplots} 
+\usetikzlibrary{
+  arrows,
+  calc,
+  fit,
+  patterns,
+  plotmarks,
+  shapes.geometric,
+  shapes.misc,
+  shapes.symbols,
+  shapes.arrows,
+  shapes.callouts,
+  shapes.multipart,
+  shapes.gates.logic.US,
+  shapes.gates.logic.IEC,
+  circuits.logic.US,
+  circuits.logic.IEC,
+  circuits.logic.CDH,
+  circuits.ee.IEC,
+  datavisualization,
+  datavisualization.formats.functions,
+  er,
+  automata,
+  backgrounds,
+  chains,
+  topaths,
+  trees,
+  petri,
+  mindmap,
+  matrix,
+  calendar,
+  folding,
+  fadings,
+  shadings,
+  spy,
+  through,
+  turtle,
+  positioning,
+  scopes,
+  decorations.fractals,
+  decorations.shapes,
+  decorations.text,
+  decorations.pathmorphing,
+  decorations.pathreplacing,
+  decorations.footprints,
+  decorations.markings,
+  shadows,
+  lindenmayersystems,
+  intersections,
+  fixedpointarithmetic,
+  fpu,
+  svg.path,
+  external,
+  pgfplots.groupplots
+}
+
+%:Definiendo los estilos bloque, entrada y salida
+%\tikzstyle{bloque} = [draw, rectangle, minimum height=4em, minimum width=5em]
+%\tikzstyle{input} = [coordinate]
+%\tikzstyle{output} = [coordinate]
+\tikzset{bloque/.style={draw, rectangle, minimum height=4em, minimum width=5em}}
+\tikzset{input/.style={coordinate}}
+\tikzset{output/.style={coordinate}}
+
+%
+%:Para garantizarnos la compatibilidad con la última versión de pgfplots
+\pgfplotsset{compat=newest} 
+
+\definecolor{qqccqq}{rgb}{0,0.8,0}
+\definecolor{qqttcc}{rgb}{0,0.2,0.8}
+
+\definecolor{gridcolor}{RGB}{255 216 234} 
+\definecolor{gridlabelcolor}{RGB}{255 24 131} 
+
+\def\rnd#1{
+    \pgfmathprintnumberto[precision=2]{#1}{\temp}\temp
+}
+
+\endinput
+% Fin de dtsc-creafig.sty

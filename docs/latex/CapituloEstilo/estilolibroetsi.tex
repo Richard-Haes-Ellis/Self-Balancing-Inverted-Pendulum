@@ -1,0 +1,723 @@
+% !TEX root =../LibroTipoETSI.tex
+
+%:Descripción del fichero de estilo de la ETSI
+
+\chapter{Estilo tipográfico LibroETSI}\label{estilo}
+
+\lettrine[lraise=-0.1, lines=2, loversize=0.25]{E}{n} este Capítulo se analiza el fichero de estilo \ttcolor{libroETSI.sty} en el que se han definido los diferentes elementos que constituyen el estilo tipográfico propuesto en la Escuela Técnica Superior de Ingeniería de la Universidad de Sevilla para la redacción y publicación de libros y otros tipos de documentos. 
+
+El objetivo de este análisis es explicar detalladamente la relación entre los paquetes que se han utilizado y su reflejo en la confección del documento, para permitir, si se desea, modificar, corregir o mejorar cualquiera de los mismos por los usuarios.
+
+Por supuesto, como ocurre en cualquier diseño, existen propuestas alternativas a las que aquí se recogen y creemos que con la exposición realizada se facilitará una mayor extensión de la utilización de \LaTeX\ por parte de todos los miembros de nuestra Escuela. 
+
+Es importante señalar que muchas de las instrucciones del estilo \emph{tienen que estar en el orden que se proponen}. Al ser \LaTeX\ un lenguaje en el que numerosos bloques de código (paquetes) se cargan consecutivamente, es importante el orden en el que se realiza esta carga, para evitar posibles incompatibilidades.
+
+\section{Bloque 0}
+
+Está formado por un conjunto de sentencias genéricas en cualquier hoja de estilo de \LaTeX\ y en él se establece el formato que va a utilizarse (LaTex2e) además de definir las posibles opciones que se han incorporado al estilo y procesarlas. Debemos observar que estas opciones pueden venir definidas o bien en la declaración del documento, como se propone en el fichero \ttcolor{libroTipoETSI.tex} o bien en la propia llamada del paquete. Así, se podrían haber escrito las primeras instrucciones del fichero \ttcolor{libroTipoETSI.tex} en la forma:
+
+\begin{lstlisting}[rulecolor=\color{white}]
+\documentclass[paper=a4,10pt, twoside]{scrbook}
+\usepackage[Myfinal=true, Minion=false]{libroETSI}
+\end{lstlisting}
+
+Para poder utilizar estas opciones y alguna otra que veremos interesante introducir, como el idioma, debemos saber que, por defecto, son falsas por lo que, en realidad, no hubiera sido necesaria colocar la opción \ttcolor{Minion=false}. Sin embargo, a veces se prefiere su declaración para hacer más explícita que se está utilizando. Observar la forma que se definen las opciones mediante las instrucciones
+
+\begin{lstlisting}[rulecolor=\color{white}]
+\DeclareBoolOption{Myfinal}
+\DeclareBoolOption{Minion}
+\DeclareBoolOption{English}
+\end{lstlisting}
+
+\section{Bloque 1: Aspectos generales}
+
+El primer paquete que se carga se denomina \ttcolor{etoolbox}. \index{etoolbox}Este paquete general permite importantes correcciones en el resto de la hoja de estilo, modificando de manera sustancial el comportamiento de algunos de los elementos utilizados. Así, por ejemplo, hemos utilizado un comando definido en este paquete, \ttcolor{appto} \index{appto}en la sentencia
+
+\begin{lstlisting}[rulecolor=\color{white}]
+\appto{\appendices}{\def\Hy@chapapp{Appendix}}
+\end{lstlisting}
+que ha resuelto un grave problema que aparece al generar el índice de un documento que tenga apéndices que esté escrito en español o cualquier otro idioma que tenga caracteres no comprendidos entre los primeros 128 del código ASCII.
+
+A continuación se cargan un conjunto de paquetes que resuelven incompatibilidades con el tipo de documento que estamos utilizando, resuelven problemas internos o nos permiten realizar comparaciones booleanas. 
+
+Seguidamente se carga el paquete \ttcolor{microtype}\index{microtype}, si el parámetro \ttcolor{Myfinal} es \ttcolor{true}. Este paquete es responsable de finísimos microajustes en los textos generados por \LaTeX\, permitiendo la expansión o comprensión de caracteres y espacios en blanco de un documento para mejorar su apariencia. Con diferencia a lo que se realiza en Word, \TeX\ gestiona estas correcciones a nivel de parágrafo, lo que confiere un aspecto altamente profesional a los documentos generados. Debido a la complejidad de los algoritmos que se utilizan, al cargar \ttcolor{microtype} se enlentece considerablemente la compilación del documento, por lo que resulta conveniente definir \ttcolor{Myfinal} como \ttcolor{true} únicamente en las etapas últimas de redacción. ¡Pero no sólo en la última!, puesto que el ajuste que introduce hace que a veces cambie la situación de las líneas huérfanas y viudas, de considerable importancia desde un punto de vista tipográfico. 
+
+Siguiendo los consejos de los editores de IEEE, se han modificado un conjunto de valores por defecto lo que hace el documento menos restrictivo en lo referente a la colocación de los elementos flotantes dentro de una página. Además, se ha optado por permitir que un conjunto de fórmulas que constituyan un bloque (definidas dentro del entorno  \comandos{begin}{align}... \comandos{end}{align}, por ejemplo) puedan escribirse en diferentes páginas. Si se desea cambiar este comportamiento, simplemente debemos modificar el valor de \ttcolorc{interdisplaylinepenalty} a un valor más elevado, por ejemplo $10000$.
+
+Aunque el tipo de documento utilizado, \ttcolor{scrbook}\index{scrbook}, incorpora por defecto un conjunto de instrucciones que permiten una gestión muy eficiente del tamaño de los diferentes elementos que constituyen una página (cabecera, ancho del texto, altura, pie de página, offset de encuadernación, etc, ) se ha optado por utilizar el paquete \ttcolor{geometry}\index{geometry} para ese fin. En el fichero de estilo simplemente se carga el paquete y los parámetros concretos se definen posteriormente en el fichero principal que estemos utilizando. Por ejemplo, este documento se ha generado con los siguientes:
+
+\begin{lstlisting}[rulecolor=\color{white}]
+paperheight=240mm,% Altura de la página
+paperwidth=170mm,%   Anchura
+top=25mm,%
+headsep=7.5mm,%
+footskip=10mm,%
+textheight=190mm,%     Altura del texto
+textwidth=124mm,%      Ancho del texto
+bindingoffset=15mm,%   Offset de encuadernación
+twoside
+\end{lstlisting}
+
+Finalizamos este bloque definiendo un alias para el tamaño básico de la fuente que hemos declarado en la sentencia inicial para poder realizar un escalado de los diferentes tamaños que se van a usar en el documento. Observad que se crean dos dimensiones, para la fuente y para el interlineado. \ttcolorc{lnormal} y \ttcolorc{lbnormal}, respectivamente.
+
+\section{Bloque 2: Idioma, Codificación y Fuentes}
+\subsection{Idioma}
+La posibilidad de utilizar nuestra plantilla para escribir textos en inglés (es el único idioma aparte del español que se ha considerado) nos obliga a establecer una posible opción para cargar el paquete \ttcolor{babel}\index{babel} de una u otra manera. Este paquete es el responsable de establecer las reglas de partición silábica, entre otras cosas, por lo que resulta imprescindible su incorporación a una hoja de estilo. Cabe decir que en estos momentos el responsable de su mantenimiento es el español Javier Bezos, lo que nos garantiza una excelente adaptación del paquete a nuestro idioma.
+
+Además de la partición silábica, un determinado conjunto de macros quedan automáticamente traducidos como por ejemplo, la definición de límite, máximos y mínimos que se utilizan en la escritura matemática. Observemos cómo aparecen unos y otros en función del idioma que utilicemos:
+\begin{LTXexample}[pos=r, hsep=15pt,width=0.45\textwidth]
+\begin{align*}
+\lim_{n\to\infty}a_{n}&=10\\
+\max\left[{a,b}\right]&=a
+\end{align*}
+\figurename, \tablename
+
+\selectlanguage{english}
+\begin{align*}
+\lim_{n\to\infty}a_{n}&=10\\
+\max\left[{a,b}\right]&=a
+\end{align*}
+\figurename, \tablename
+\selectlanguage{spanish} 
+\end{LTXexample}
+
+El grupo de macros que gestionan los nombres que cambian en uno y otro caso, se encuentra a continuación en el fichero de estilo. 
+\subsection{Codificación}
+Para gestionar la forma en la que se controla la codificación en la que está escrita los ficheros fuentes de \LaTeX\ se utiliza el paquete \ttcolor{inputenc}\index{inputenc} junto con el paquete \ttcolor{fontenc}\index{fontenc}. Estos dos paquetes sólo son necesarios si no utilizamos \LuaLaTeX\ ya que en caso de utilizarse este motor, la gestión se realiza por un mecanismo completamente diferente, interno al propio motor y del que podemos despreocuparnos. 
+
+\subsection{Fuentes del texto y comandos asociados}
+La selección de la fuente a utilizar depende fundamentalmente de qué motor estemos utilizando para generar nuestro texto. Si optamos por \LaTeX\ (en realidad, pdf\LaTeX\ ), la selección del texto normal se realiza en el fichero principal mediante el comando \comandos{usepackage}{tgtermes}, que selecciona para el texto un clon de la fuente Times. En general, las fuentes que se pueden utilizar con \LaTeX\ no son demasiadas y una excelente recopilación de las disponibles se encuentra en la dirección \url{http://www.tug.dk/FontCatalogue/}. 
+
+Sin embargo, si nuestro motor es \LuaLaTeX, podemos utilizar como fuente de texto cualquier fuente .otf ó .ttf presente en nuestro ordenador. Cómo se cargan dichas fuentes y cómo se utilizan se encuentra recogido en la documentación del paquete \ttcolor{fontspec}\index{fontspec} y en nuestro estilo se muestra en las líneas de código siguientes:
+\begin{lstlisting}[rulecolor=\color{white}]
+\setmainfont[Renderer=Basic, Ligatures=TeX,% 
+	Scale=1.0,%
+	]{Times New Roman}
+\end{lstlisting}
+
+La fuente que hemos seleccionado de esta manera es la que utilizaremos en el texto normal. Es decir, en todo el texto que no sea cabeceras de página, enunciados de secciones, captions de figuras, etc. Para todos estos casos, como una elección de diseño, hemos utilizado una fuente perteneciente al tipo denominado \emph{sin serif}. En el caso de \LaTeX\ hemos optado por una fuente {\ifluatex{\fontspec[Scale=0.95]{Helvetica}Helvética Narrow}\else{Helvética Narrow}\fi}, mientras que en el caso de \LuaLaTeX\ hemos utilizado una fuente {\ifluatex{\fontspec{Arial Narrow}Arial Narrow}\else{Arial Narrow}\fi}. Los comandos iniciales de esta decisión se muestran en las siguientes líneas de código.
+\begin{lstlisting}[rulecolor=\color{white}]
+\ifluatex
+	\setsansfont[Ligatures=TeX,		% Se puede obtener un texto sin serif con \ssfamily				
+	Scale=0.95,
+	]{Arial Narrow}
+\else
+	\renewcommand{\sfdefault}{phv} 
+\fi
+\end{lstlisting}
+
+Podemos observar la sintaxis completamente diferente que se utiliza en un caso y otro.  En realidad, para facilitar la utilización de diversas variantes de ambas fuentes, en cualquiera de los dos motores de composición elegidos, hemos definido un conjunto de comandos que están recogidos en las siguientes líneas.
+
+\begin{lstlisting}[rulecolor=\color{white}]
+\ifluatex
+
+	\newfontfamily\helveticam{Arial}						% Helvética
+	\newfontfamily\helveticab{Arial Bold}					% Helvética Bold
+	\newfontfamily\helveticai{Arial Italic}					% Helvética itálica
+	\newfontfamily\helveticax{Arial Bold Italic}				% Helvética Bold Itálica
+
+	\newfontfamily\titular{ArialNarrow-Bold}				% Para los titulares
+	\newfontfamily\titulart{ArialNarrow-Bold}				% Para los titulos
+	\newfontfamily\titulari{ArialNarrow-BoldItalic}			% Para los titulares oblicua
+
+	\newfontfamily\titulartoc{ArialNarrow}					% Para el TOC
+	\newfontfamily\titulartocb{ArialNarrow-Bold}			% Para el TOC bold
+	\newfontfamily\titulartoci{ArialNarrow-BoldItalic}		% Para el TOC oblicua
+
+\else
+
+	\newcommand{\helveticam}{\usefont{T1}{phv}{m}{n}\selectfont }
+	\newcommand{\helveticab}{\usefont{T1}{phv}{b}{n}\selectfont }
+	\newcommand{\helveticai}{\usefont{T1}{phv}{m}{it}\selectfont }
+	\newcommand{\helveticax}{\usefont{T1}{phv}{b}{it}\selectfont }
+
+	\newcommand{\titular}{\usefont{T1}{phv}{bc}{n}\selectfont }
+	\newcommand{\titulari}{\usefont{T1}{phv}{bc}{it}\selectfont }
+	\newcommand{\titulart}{\usefont{T1}{phv}{bc}{n}\selectfont }
+	
+	\newcommand{\titulartoc}{\usefont{T1}{phv}{mc}{n}\selectfont }
+	\newcommand{\titulartocb}{\usefont{T1}{phv}{bc}{n}\selectfont }
+	\newcommand{\titulartoci}{\usefont{T1}{phv}{mc}{it}\selectfont }
+	
+\fi
+\end{lstlisting}
+
+De esta manera para el usuario del paquete es transparente el uso de \LaTeX\ o \LuaLaTeX . La sintaxis en este último caso se debe a la utilización del paquete \ttcolorc{usepackage[no-math]\{fontspec\}} que hemos cargado con anterioridad y en el caso de \LaTeX\ al uso de instrucciones básicas del esquema de selección de fuentes.
+
+En cualquier caso, hasta este momento sólo hemos definido los comandos que nos permitirán hacer uso de las tipografías seleccionadas. Su aplicación concreta, con el tamaño que hemos elegido debe realizarse a continuación. En primer lugar, para facilitar un escalado adecuado de las distintas fuentes, hemos definido un conjunto de dimensiones relativas como, por ejemplo,
+\begin{lstlisting}[frame=none]
+\newdimen\lcatorce
+\newdimen\lbcatorce
+\end{lstlisting}
+y posteriormente le hemos asignado valores, 
+\begin{lstlisting}[frame=none]
+\lcatorce=\dimexpr1.4\dimexpr\lnormal
+\lbcatorce=\dimexpr1.4\dimexpr\lbnormal
+\end{lstlisting}
+
+Estos valores se corresponden  en este caso a fracciones (1,4 ó 140\%) del tamaño de la fuente normal que, recordemos, habíamos definido con anterioridad.
+
+Por último, un conjunto de comandos facilita la utilización de las fuentes en sus diversas variaciones a lo largo de todo el texto. Así, por ejemplo, se ha definido en la siguiente línea de código un comando para definir la fuente y el tamaño que vamos a usar en los títulos de las secciones:
+\begin{lstlisting}[frame=none]
+\newcommand{\aheadsecc}{\fontsize{\ltrece}{\lbtrece} \titular}
+\end{lstlisting}
+
+Por supuesto, una vez que hemos definido este comando, podemos utilizarlo siempre que deseemos. Así, la utilización y el resultado del comando \ttcolorc{aheadsecc} se muestra a continuación:
+\begin{LTXexample}[pos=r, hsep=15pt,width=0.45\textwidth]
+\aheadsecc{Como si fuera una sección}
+\end{LTXexample}
+
+\subsection{Fuentes matemáticas y símbolos}
+En una Escuela de Ingeniería la gestión de las fuentes matemáticas en nuestros documentos juega un papel fundamental. Po ello, si utilizamos \LuaLaTeX\ es necesario cargar los paquetes \ttcolor{lualatex-math}\index{lualatex-math} y \ttcolor{luatextra}\index{luatextra}. Observar además que aparte de estos dos paquetes, orientados básicamente a la utilización de aspectos concretos relacionados con símbolos matemáticos, hemos incluido el comando \ttcolorc{usepackage[no-math]\{fontspec\}}. Aunque \ttcolor{fontspec} se utilizará en la gestión del tipo de fuentes y comandos relacionados con las mismas, es necesario incluirlo aquí por el típico problema que hemos mencionado anteriormente del orden en el que se encargan los paquetes.
+
+En general, para mejorar el escalado de determinados símbolos, utilizaremos el paquete \ttcolor{exscale}\index{exscale}. Advertimos nuevamente que \emph{se tiene que cargar exactamente antes que el paquete \ttcolor{amsmath}\index{amsmath}}, que se carga a continuación, junto con una adición recomendable, el paquete \ttcolor{mathtools}\index{mathtools}.
+
+Existen numerosos paquetes que definen los símbolos matemáticos más habituales. Uno de los más completos es el paquete \ttcolor{MnSymbol}\index{MnSymbol}, especialmente indicado cuando la fuente del texto es la Minion, licenciada por Adobe. Sin embargo, la utilización tanto de la fuente de símbolos como la fuente de texto dentro de \LaTeX\ es un asunto no trivial. Requiere la disponibilidad de la fuente Minion, y la creación del  paquete \ttcolor{MinionPro}\index{MinionPro}. El lector interesado puede encontrar el procedimiento para crear dicho paquete en \url{https://github.com/sebschub/FontPro/}.
+
+Si se han seguido las instrucciones que se encuentran en la dirección anterior y se desea utilizan la fuente, se indicará mediante uno de las opciones del programa, escribiendo \ttcolor{Minion=true}. Con ello, se cargarían los correspondientes paquetes mediante las primeras líneas del siguiente código:
+\begin{lstlisting}[rulecolor=\color{white}]
+\makeatletter
+\ifdtsc@Minion
+	\usepackage{MnSymbol}
+	\usepackage[mathlf, minionint, mnsy]{MinionPro}
+	\newcommand{\bm}{\ensuremath{\boldsymbol}}
+\else
+	\usepackage{amssymb}
+	\usepackage{mathptmx}
+	\usepackage{amsfonts}
+	\usepackage{bm}
+\fi
+\makeatother
+\end{lstlisting}
+
+En el caso que no se tenga instalado el paquete, o no se desee utilizar, basta ignorar la opción y se ejecutarán las restantes líneas del código anterior. 
+
+\section{Bloque 3: Tabla de contenidos}
+Uno de los aspectos sobresalientes de \LaTeX\ es la facilidad para generar la \emph{Tabla de contenidos} (TOC) de un documento. No sólo para generarla sino también para controlar cómo se presenta y cómo se gestiona el contenido de la misma. En esta sección explicaremos los comandos que hemos utilizado con este fin, teniendo en cuenta que hemos actuado directamente renombrado y creando nuevos elementos, sin utilizar paquetes específicos para esta tarea. Si alguno desea hacer uso de los mismos, unos de los más ampliamente utilizados es el paquete \ttcolorc{tocloft}\index{tocloft}.
+
+Para controlar dónde queremos que aparezca la tabla de contenido, debemos utilizar el comando \ttcolorc{tableofcontens}\index{tableofcontens}. Si analizamos el fichero principal de este documento, veremos que precediendo a este comando aparecen las líneas
+\begin{lstlisting}[frame=none]
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{listasf}{Índice}
+\pagestyle{especial}
+\end{lstlisting}
+Con ellas indicamos, en primer lugar, que la tabla de contenidos siempre va a aparecer en una página impar, que haremos uso de un estilo de página\footnote{Más adelante veremos cómo se definen estos estilos.} que denominamos \ttcolor{especial} y que queremos que la propia tabla de contenido (o índice del documento) aparezca referenciada en en el índice, aunque pueda parecer complejo entender lo que esto significa.\LaTeX\ permite controlar el nombre que le hemos asignado a la tabla de contenido mediante la sentencia \comando{def}\comando{contentsname}\ttcolor{\{Índice\}}, tal como se define en otro lugar del estilo, puesto que este nombre dependerá del idioma que utilicemos.
+ 
+A la hora de construir esta tabla de contenidos, nuestra primera decisión fue establecer que iban a aparecer hasta los apartados que hemos denominados \ttcolor{subsubsecciones}, lo que se logra mediante el \ttcolor{\{3\}} del comando \comandos{setcounter}{tocdepth}\index{tocdepth} en \ttcolor{libroETSI.sty}.  Cambiar este número haría aparecer menos apartados o más, dependiendo de la elección.
+
+Para establecer la manera en la que cada nivel de segmentación aparece en el TOC hacemos uso de una secuencia de comandos similares a las mostradas a continuación para el caso del capítulo:
+\begin{lstlisting}[frame=none, numbers=left, xleftmargin=2em]
+\makeatletter
+	\renewcommand*\l@chapter[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.5em \@plus\p@
+	 \@dottedtocline{0}{0em}{1em}{\tocchap #1}{\tocchap #2}
+	}
+\makeatother
+\end{lstlisting}
+El elemento clave está recogido en la línea \ttcolor{6}. El significado de cada uno de los parámetros es el siguiente: el \ttcolor{0} señala que estamos formateando el nivel de capítulo. El siguiente parámetro, \ttcolor{0em} establece la indetación de la línea, \ttcolor{1em} define la anchura que reservamos para el número que mostramos, si es que la parte tiene números y los otros dos establecen las características tipográficas que vamos a utilizar para el título (incluyendo el número si lo hubiera) y el número de la página en el que se encuentra la correspondiente parte. Este ajuste se ha realizado sin tener en cuenta ninguno de los paquetes, únicamente utilizando sentencias del propio núcleo de \LaTeX\. De forma similar hemos procedido para el resto de los elementos de segmentación del texto.
+
+Aunque algo redundante, nuestra siguiente decisión afecta a la manera en la que hemos querido que aparezcan en el índice los índices del texto (valga la redundancia), tales como el \emph{Índice de Figuras}, \emph{Índice Alfabético}, etc y otros elementos como el \emph{Resumen, Prefacio}, etc o la \emph{Bibliografía}. No es trivial pero, básicamente, hemos definido dos listas, una para los elementos que aparecen antes del Índice y otra para los  que aparecen después, al final del texto, que se corresponden aproximadamente a lo que hemos denominado \ttcolorc{frontmatter}\index{frontmatter} y \ttcolorc{backmatter}\index{backmatter}, respectivamente. Si nos fijamos por ejemplo en la lista que hemos denominado \ttcolorc{listasf}, cómo se representan los elementos que están incluidos en la misma se realiza con las instrucciones
+\begin{lstlisting}[frame=none]
+\makeatletter
+	\newcommand*\l@listasf[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.05em \@plus\p@
+	 \@dottedtocline{0}{0em}{2.5em}{\fontsize{\lnueve}{\lbnueve}\selectfont \helveticai #1}{\fontsize{\lnueve}{\lbnueve}\titulartoc #2}
+	}
+\makeatother
+\end{lstlisting}
+en las que vemos, por ejemplo, que el tamaño del texto es el tamaño relativo \ttcolorc{lbnueve}, junto con una fuente \ttcolorc{helveticai} represente esta fuente lo que represente (en un apartado anterior ha quedado definido).
+
+Una cuestión distinta es las instrucciones que debemos ejecutar para incluir un determinado elemento en la lista correspondiente. Por ejemplo, para incluir el \emph{Prefacio} en la  \ttcolorc{listasf}, observemos que hemos escrito el siguiente comando: 
+\begin{lstlisting}[frame=none]
+\addcontentsline{toc}{listasf}{Prefacio}
+\end{lstlisting}
+
+Para finalizar este apartado, también hemos propuesto que no aparezcan los habituales puntos que existen entre el texto y el número de página correspondiente de muchos índices, ajustando a \ttcolor{10000} el parámetro \ttcolor{\textbackslash@dotsep}. Unas referencias interesantes para manejar todos estos elementos las encontramos en las siguientes direcciones \url{http://tex.stackexchange.com/questions/110253/what-the-first-argument-for-lsubsection-actually-is} y \url{http://tex.stackexchange.com/questions/33841/how-to-modify-the-indentation-before-sectioning-titles-in-the-table-of-contents}.
+
+\section{Bloque 4: Estilos de Páginas y Títulos}
+Este apartado ha sido uno de los más complejos en cuanto a diseño se refiere, atendiendo a la gran cantidad de elementos que componen un texto y sus interrelaciones. 
+
+En general, se recomienda que los tipos de páginas diferentes que se utilicen en un documento sea un número muy limitado. Por ello, \LaTeX\ no establece un mecanismo elemental para definir distintos tipos de páginas (en realidad, únicamente un tipo \ttcolor{plain} y un tipo \ttcolor{empty}) y debemos acudir a paquetes específicos que nos permitan una mayor libertad de diseño. Lo mismo podríamos decir a la hora de definir el formato de los distintos elementos, lo que hemos denominado genéricamente \emph{Títulos}, haciendo con ello referencia a los \emph{Títulos} de los capítulos, secciones, subsecciones, etc. 
+
+Hemos de tener en cuenta que el aspecto de un libro está básicamente determinado por el formato que se ha elegido para los diferentes títulos de las partes que lo constituyen, el formato de las páginas y qué queremos que aparezca en las cabeceras y pies de páginas del mismo. Todo esto se ha conseguido utilizando un paquete desarrollado por el español Bezos denominado \ttcolor{titlesec}\index{titlesec}, que se carga en nuestro fichero mediante la instrucción \comandos{usepackage[noindentafter, pagestyles,...]}{titlesec}. En el listado siguiente se recogen algunos de los elementos de los formatos elegidos para que mediante su análisis podamos realizar nuestro propio diseño.
+\begin{lstlisting}[frame=none, numbers=left, xleftmargin=2.5em]
+\newpagestyle{esitscCD}
+	{
+	\esirulehead
+	\sethead[\numpagpar \rhfont\chaptername\ \thechapter. \;\chaptertitle][][]%
+			{}{}{\rhfont\thesection\ \;\sectiontitle \numpagodd}
+	}
+
+\newpagestyle{primera}
+	{
+	\esirulehead \footrule
+  	\sethead[][][]{\includegraphics[width=2 cm]{logoUS.pdf}}%
+  				{\raisebox{0.8cm}{\begin{minipage}{0.515\textwidth}
+				\centering
+				{\aheadsubsecc \fromtitulacion}\\
+				\vspace*{.5ex}
+				{\normalfont \fromasignatura}\\
+				\vspace*{1ex}
+				\normalfont \fromconvocatoria \quad \fromfecha
+				\end{minipage}}
+				}%
+				{\includegraphics[width=4 cm]{logoTSC.pdf}
+				}
+	\setfoot{}{\rhpagefont Pág. \thepage\, de\, \zpageref{LastPage}}{}
+  	}
+
+\newpagestyle{examen}
+	{
+	\esirulehead
+	\sethead[\rhpagefont Pág. \thepage\, de\, \zpageref{LastPage}][\aheadsubsecc\fromasignatura][[\rhpagefont\fromfecha]%
+	{[\rhpagefont\fromfecha}{\aheadsubsecc\fromasignatura}{\rhpagefont Pág. \thepage\, de\, \zpageref{LastPage}}
+	}
+
+\newpagestyle{problema}
+	{
+	\esirulehead
+    	\sethead[\numpagpar][][\rhfont\chaptername \; \thechapter. \chaptertitle]% even
+        		{\rhfont\theproblema \; \problematitle}{}{\numpagodd}% odd
+    	}
+\newpagestyle{especial}
+	{ 
+	\esirulehead
+	\sethead[\numpagpar][\rhfont\chaptertitle][] {}{\rhfont\chaptertitle}{\numpagodd}
+	}
+
+\newpagestyle{paginablanco}
+	{
+  	\sethead[][][]{}{}{}
+	    \vspace*{0.2\textheight}
+    \begin{center}
+    {\emph{Página en blanco} }
+    \end{center}
+	}
+	
+\renewpagestyle{plain}
+{
+\setfoot[][\rhpagefont\thepage][]{}{\rhpagefont\thepage}{}
+}
+          
+%:Estilo de capítulos con numeración
+\titleformat{\chapter}{\vspace{75pt}\achapnum} {\makebox[25 pt]{\raggedright\thechapter}}{8pt}{\hspace*{-6pt}\raggedright\achaptext #1}[\vspace{0.3pc} {\color{gray!75}\titlerule[3.5pt]} \vspace{50pt}]
+\titlespacing{\chapter}{0 pt}{0 pt}{0 pt}[0 pt]
+
+%:Estilo de capítulos sin numeración
+\titleformat{name=\chapter,numberless}{\vspace{75pt}}{}{0pc}{\filleft\achaptext #1}[\vspace{0.3pc} {\color{gray!75}\titlerule[3.5pt]} \vspace{50pt}]
+\titlespacing{name=\chapter,numberless}{0 pt}{0 pt}{0 pt}[0 pt]
+
+%:Estilo de sección     
+\titleformat{\section}{\aheadsecc}{\thesection}{10 pt}{#1} 
+\titlespacing{\section}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+%:Estilo de sección sin numeración     
+\titleformat{name=\section,numberless} {\aheadsecc}{}{0 pt}{#1} 
+\titlespacing{name=\section,numberless}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+%:Estilo de sección sin numeración personal
+\titleclass{\misection}{straight}[\chapter]        
+\titleformat{name=\misection,numberless}{\aheadsecc}{}{0 pt}{#1} 
+\titlespacing{name=\misection,numberless}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+%:Estilo de problema en un libro con capítulos de problemas   
+\newcounter {problema}[chapter]
+\makeatletter
+\renewcommand {\theproblema}{P. \thechapter.\@arabic\c@problema}
+\makeatother
+\newcommand{\problemtitle}{}
+
+\titleclass{\problema}{straight}[\chapter]  
+\titleformat{name=\problema}{\aheadsecc}{\theproblema}{10 pt}{#1}[]      
+\titlespacing{name=\problema}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+\makeatletter
+\let\problemaint\problema
+\def\problema{\@ifnextchar[\problemaii\problemai}
+\def\problemai#1{\gdef\problematitle{#1}\problemaint{#1}}
+\def\problemaii[#1]#2{\gdef\problematitle{#1}\problemaint[#1]{#2}}
+\makeatother
+
+%:Para que el cambio del tipo de página se gestione con los comandos
+\makeatletter
+	\let\problema@without@pagestyle\problema
+	\def\problema{\pagestyle{problema}\problema@without@pagestyle}
+\makeatother
+
+\makeatletter
+	\let\section@without@pagestyle\section
+	\def\section{\pagestyle{esitscCD}\section@without@pagestyle}
+\makeatother
+\end{lstlisting}
+
+La definición de los estilos de páginas se realiza siguiendo el modelo que podemos ver entre las líneas \ttcolor{1} y \ttcolor{6} para el estilo de página por defecto, que hemos denominado \ttcolor{esitscCD}. En la línea \ttcolor{3} se define el comando \ttcolorc{esirulehead} que es el responsable de la línea de cabecera o bien, algún comando más para controlar el pie de página, como se puede observar en la línea \ttcolor{31} de otro de los estilos de página o cualquier comando genérico.
+
+A continuación, mediante la sección \ttcolorc{sethead[][][]\{\}\{\}\{\}} definimos los elementos que vamos a incorporar en las secciones izquierda, centro y derecha de las páginas pares ó izquierda centro y derecha de las páginas impares. Las líneas \ttcolor{4} y \ttcolor{5} son las responsables de las cabeceras de este documento y creemos que es fácil entender su funcionamiento.
+
+Un ejemplo diferente lo encontramos en el estilo de página \ttcolor{especial}. Podemos observar que en este caso las páginas pares e impares son las mismas diferenciándose únicamente en la posición del número de página.
+
+El paquete permite definir con gran libertad estilos de páginas mucho más complejos, como podemos apreciar en los estilos de página que hemos denominado \ttcolor{primera} (primera página de un examen) y \ttcolor{examen}. Así, se han incluido en las cabeceras logos, varias líneas o un contador del número de páginas de las que consta el examen, como podemos ver en un ejemplo concreto en la  \autoref{fig04-01}.
+
+\begin{figure}[htpb]
+\centering 
+\includegraphics[width=0.8\textwidth]{figuras/cabeceras.pdf}
+\caption{Ejemplos de cabeceras de la página primera de un examen y de la página segunda}\label{fig04-01}%\vspace{-.5 cm}
+\end{figure} 
+
+Como últimos ejemplos de definición de estilos de páginas, se muestran las definiciones del estilo de página \ttcolor{paginablanco} que generaría una página en blanco, con el texto \emph{Página en blanco} en su centro, o el estilo \ttcolor{plain}, que es una modificación del estilo definido por defecto en \LaTeX.
+
+A continuación, en el anterior código, se muestran varios ejemplos de definiciones de los elementos de segmentación del texto. El paquete \ttcolor{titlesec} es la referencia para estudiar cómo se han definido y solamente destacar que se ha creado un nuevo elemento, \ttcolorc{problema} para poder gestionar los problemas como si fueran secciones de un libro permitiendo, por ejemplo, su inclusión en la tabla de contenidos. 
+
+Es importante prestar especial atención a las líneas de código \ttcolor{99}-\ttcolor{107}. En ella establecemos que siempre que definamos un problema o una sección, nos garantizamos que las páginas que vamos a utilizar se correspondan respectivamente con la página especial de problemas o con la página general de nuestro texto. Con ello logramos que en las cabeceras correspondientes queden reflejados el problema o la sección en la que nos encontramos. 
+
+\section{Bloque 5: Gestión general del documento}
+En este Bloque 5 se recogen un gran número de comandos, cargas de paquetes y ajustes que, como su nombre indica, permite una mejor gestión del documento.  La gran extensión del mismo, más de 700 líneas de código, hace inviable su descripción pormenorizada y nos limitaremos a señalar los elementos más importantes. Debemos insistir que el orden en el que se ejecuta la carga de los paquetes no es arbitrario y hay restricciones sobre este orden que pueden dar lugar a inconsistencias y errores. 
+
+\subsection{Apéndices}
+Para la gestión de los apéndices se ha elegido el paquete \ttcolor{appendix}. Para ajustar la manera en la que se muestran los apéndices en el texto, se modifica dentro del entorno el formato de \ttcolorc{chapter} de manera que también se incluya la palabra \emph{Apéndice} dentro de la definición del mismo. También se ha utilizado dentro del entorno una página de estilo especial y para evitar un problema con la tabla de contenidos cuando se utiliza el idioma español, ha sido necesario incluir las siguiente líneas de código:
+
+\begin{lstlisting}[frame=none]
+\makeatletter
+	\appto{\appendices}{\def\Hy@chapapp{Appendix}}
+\makeatother
+\end{lstlisting}
+%
+que se encuentran situadas tras la carga del paquete \ttcolor{hyperref} para garantizar un correcto funcionamiento.
+
+\subsection{Colores}
+Entre los diversos paquetes que permiten la utilización de colores dentro de \LaTeX\ hemos elegido \ttcolor{xcolor}\index{xcolor} con las opciones \ttcolor{svgnames, x11names}. En la documentación del mismo vemos que existe una gran variedad de colores y esquemas que pueden utilizarse con mucha facilidad. Creemos que es una buena idea definir los colores en un lugar concreto y un ejemplo de cómo puede hacerse se muestra en las siguientes líneas.
+
+\begin{lstlisting}[frame=none]
+\usepackage[svgnames, x11names]{xcolor}
+\definecolor{light-gray}{gray}{0.90}
+\definecolor{shadecolor}{gray}{0.90}
+\definecolor{refcolor}{named}{Black}
+\definecolor{Matlabcolor}{RGB}{252,251,220}
+\end{lstlisting}
+%
+También hemos definido en el fichero correspondiente a la edición colores propios de la ETSI:
+
+\begin{lstlisting}[frame=none]
+\definecolor{etsi}{RGB}{83,16,12}
+\definecolor{fondo}{RGB}{136,18,1}
+\definecolor{texto}{RGB}{253,181,138}
+\definecolor{logoetsi}{RGB}{176,124,96}
+\end{lstlisting}
+
+\subsection{Aspectos genéricos de tratamiento del texto}
+A continuación hemos cargado un conjunto de paquetes que mejoran aspectos genéricos y facilitan la utilización de logos y acentos especiales.  Por ejemplo, el paquete \ttcolor{icomma}\index{icomma} corrige un pequeño error en \LaTeX\ y establece una separación correcta de la coma decimal.
+
+En este bloque también está incluido la asignación de un valor al contador \ttcolor{secnumdepth}\index{secnumdepth}. Con la instrucción 
+
+\begin{lstlisting}[frame=none]
+\setcounter{secnumdepth}{4}
+\end{lstlisting}
+%
+le asignamos el valor de 4, que significa que hasta las  subsecciones deben aparecer numeradas. No debemos confundir este parámetro con  \ttcolor{tocdepth}\index{tocdepth}, que establece hasta qué nivel debe aparecer en la tabla de contenidos. 
+
+La gestión de los subíndices y superíndices en las ecuaciones matemáticas se realiza de forma diferente según estemos compilando con \LaTeX\ o \LuaLaTeX . En este último caso, el control es muy preciso diferenciándose incluso si la ecuación está en línea con el texto o bien no lo está.
+
+Adicionalmente hemos definido el comando \ttcolorc{xb} que permite modificar la posición de los subíndices cuando se utilizan con letras descendientes como la \emph{f} o \emph{g}. En el siguiente ejemplo se muestra su utilización (o no) y el resultado que se obtiene.
+\begin{LTXexample}[pos=r, hsep=15pt,width=0.45\textwidth]
+\begin{align*}
+f_{1}(t)&=\sen(\omega_{0}t)\\
+f\xb{1}(t)&=\sen(\omega_{0}t)\\
+g_{i}(t)&=\sen(\omega_{0}t)\\
+g\xb{i}(t)&=\sen(\omega_{0}t)
+\end{align*}
+\end{LTXexample}
+
+También hemos creado un conjunto de comandos que facilitan la escritura de los subíndices y superíndices en modo texto, \ttcolorc{tsp} y \ttcolorc{tsb}.
+
+Asimismo se incluyen en este apartado los paquetes ya mencionados \ttcolor{epigraph}\index{epigraph}, que permite escribir un epígrafe en el lugar que se desee y el paquete \ttcolor{lettrine}\index{lettrine}, con el que obtenemos el efecto de la primera letra del texto del capítulo en mayúscula y negrita y ocupando más de un renglón. Ambos paquetes han sufrido ajustes y en las siguientes líneas se recogen los realizados en el texto y autor del epígrafe.
+
+\begin{lstlisting}[frame=none]
+\makeatletter			%% El texto
+\renewcommand{\@epitext}[1]
+	{%
+	\begin{minipage}{\epigraphwidth}
+		\begin{\textflush} \itshape #1\\
+		\ifdim\epigraphrule>\z@ \@epirule \else \vspace*{1ex} \fi
+		\end{\textflush}
+	\end{minipage}
+	}
+\makeatother
+
+\makeatletter			%% El autor
+\renewcommand{\@episource}[1]
+	{%
+	\begin{minipage}{\epigraphwidth}
+		\begin{\sourceflush} \scshape #1\end{\sourceflush}
+	\end{minipage}
+	}	
+\makeatother
+\end{lstlisting}
+
+\LaTeX\ ofrece la posibilidad de crear tablas de contenidos abreviadas de muy diversos tipos. Aunque en este texto no se han confeccionado, el paquete \ttcolor{shorttoc}\index{shorttoc} permite su gestión. Por último, destacar el uso del paquete \ttcolor{enumitem}\index{enumitem} para facilitar la creación de listas enumeradas.
+
+\subsection{Elementos flotantes}
+
+En \LaTeX\ , los elementos flotantes son las tablas y figuras y tienen un gran número de parámetros que se necesitan ajustar mediante un conjunto de paquetes seleccionados. Uno de los más importantes es el paquete \ttcolor{caption}\index{caption} que permite ajustar de manera muy preciso el texto que acompaña a estos elementos flotantes. 
+
+De acuerdo con la documentación de \ttcolor{caption}, su carga y ajuste se ha realizado con las líneas de código que siguen:
+
+\begin{lstlisting}[frame=none]
+\usepackage{caption}[2013/02/03]
+\DeclareCaptionLabelFormat{esisf}{\aheadteoremas{#1} \aheadteoremas{#2} }
+\DeclareCaptionLabelSeparator{cuadratin}{\hspace*{3pt}}
+\captionsetup{labelformat=esisf, textfont=normalfont, textformat=period, labelsep=cuadratin, format=hang, indention=0 cm,skip=10pt, labelformat=esisf}
+\end{lstlisting}
+
+Las declaraciones de formatos son diferentes para cada uno de los elementos flotantes. Así, por ejemplo, uno de los posibles recursos de \LaTeX\ es la inclusión en el texto de subfiguras, lo que se gestiona mediante el paquete \ttcolor{subfig} y la declaración de formato correspondiente, como podemos ver a continuación:
+
+\begin{lstlisting}[frame=none]
+\DeclareCaptionLabelFormat{subfig}{\aheadteoremas{#1} \aheadteoremas{(#2)} }
+\captionsetup[subfigure]{labelformat=subfig }
+\end{lstlisting}
+
+Un ejemplo de ambos paquetes podemos apreciarlo en la \autoref{fig04-02}. La referencia a las subfiguras de la figura anterior se realiza con el código siguiente, de resultado mostrado a continuación. 
+
+\begin{LTXexample}[pos=b, hsep=15pt,width=\textwidth]
+en la \autoref{fig04-02}\sfx{fig04-02a} se muestra la función de distribución de una variable aleatoria continua y en la \autoref{fig04-02}\sfx{fig04-02b} su función densidad de probabilidad.
+\end{LTXexample}
+%
+\begin{figure}[htpb]% 
+\centering 
+\subfloat[][]{% 
+\label{fig04-02a}% 
+\begin{tikzpicture}
+	\begin{axis}[% Cosas comunes a todos los gráficos
+		width=5.4cm,height=3cm, scale only axis,
+		xmin=-1, xmax=4.2, xlabel={$x$},xtick={0,3},xticklabels={,$x_{1}$,},
+		ymin=-0.1, ymax=1.4, ytick={1},
+		axis x line=middle,
+		x tick label style={{xshift=0pt},{yshift=0pt}}, ylabel=$F_{X}\left( {x} \right)$,yticklabels={$1$},
+		x label style={{xshift=-5pt},{yshift=0pt}},
+		axis y line=middle]
+	 	\draw[line width=1.5pt, color=black] (axis cs:-1,0) --(axis cs:0,0) --  (axis cs:3,1) --  (axis cs:4,1);
+	\end{axis}
+\end{tikzpicture}  
+}% 
+\hspace{10pt}% 
+\subfloat[][]{% 
+\label{fig04-02b}% 
+\begin{tikzpicture}
+	\begin{axis}[% Cosas comunes a todos los gráficos
+		width=5.4cm,height=3cm, scale only axis,
+		xmin=-1, xmax=4.2, xlabel={$x$},xtick={0,3},xticklabels={,$x_{1}$},
+		ymin=-0.1, ymax=1.4, ytick={1},
+		axis x line=middle,
+		x tick label style={{xshift=0pt},{yshift=0pt}}, ylabel=$f\xb{X}\left( {x} \right)$,yticklabels={$\dfrac{1}{x_{1}}$},
+		x label style={{xshift=-5pt},{yshift=0pt}},
+		axis y line=middle]
+		\draw[line width=1.5pt, color=black] (axis cs:0,1) -- (axis cs:3,1)-- (axis cs:3,0);  
+\end{axis}
+\end{tikzpicture}  
+}
+\caption[Función de distribución y Función densidad de probabilidad de una variable aleatoria continua]{Función de distribución y Función densidad de probabilidad de una variable aleatoria continua.}
+\label{fig04-02} 
+\end{figure} 
+
+Un ejemplo de cómo se gestionan las tablas que puedan segmentarse a través de más de una página se muestra en la \autoref{tab01-08}, obtenida con el siguiente código:
+%
+\begin{lstlisting}[frame=none]
+\begin{longtable}{p{3.5cm}p{8cm}}
+\caption{Funciones de manipulación de gráficos} \label{tab01-08}\\
+\hline
+{\rule[-8pt]{0pt}{22pt}\bfseries{Función}} & Significado\\
+\hline %\rule{0pt}{1pt}
+\endfirsthead
+\caption[]{..continuación} \\
+\hline
+{\rule[-8pt]{0pt}{22pt}\bfseries{Función}} & Significado\\
+\hline %\rule{0pt}{1pt}
+\endhead
+\hline
+\endfoot %\rule{0pt}{14pt}
+\texttt{xlabel('texto')} & Etiqueta el eje \texttt{x} de la gráfica actual\\ 
+\texttt{ylabel('texto')} & Etiqueta el eje \texttt{y} de la gráfica actual\\ 
+\texttt{title('texto')} & Título de la gráfica actual\\ 
+\texttt{text(x,y, 'texto')} & Introduce ``texto'' en la posición \texttt{(x,y)} de la gráfica actual\\ 
+\texttt{legend()} & Permite definir rótulos para las distintas líneas o curvas de la gráfica\\ 
+\texttt{grid} & Dibuja una rejilla. Con \texttt{grid off} desaparece la cuadrícula\\ 
+\texttt{axis([xmin xmax ymin ymax])} & Fija los valores máximos y mínimos de los ejes\\ 
+\texttt{axis equal} &Establece que la escala de los ejes sea la misma\\ 
+\texttt{axis square} & Fija que la gráfica sea un cuadrado\\ 
+\end{longtable}
+\end{lstlisting}
+%
+%
+\begin{longtable}{p{3.5cm}p{8cm}}
+\caption{Funciones de manipulación de gráficos} \label{tab01-08}\\
+\hline
+{\rule[-8pt]{0pt}{22pt}\bfseries{Función}} & Significado\\
+\hline %\rule{0pt}{1pt}
+\endfirsthead
+\caption[]{..continuación} \\
+\hline
+{\rule[-8pt]{0pt}{22pt}\bfseries{Función}} & Significado\\
+\hline %\rule{0pt}{1pt}
+\endhead
+\hline
+\endfoot %\rule{0pt}{14pt}
+\texttt{xlabel('texto')} & Etiqueta el eje \texttt{x} de la gráfica actual\\ 
+\texttt{ylabel('texto')} & Etiqueta el eje \texttt{y} de la gráfica actual\\ 
+\texttt{title('texto')} & Título de la gráfica actual\\ 
+\texttt{text(x,y, 'texto')} & Introduce ``texto'' en la posición \texttt{(x,y)} de la gráfica actual\\ 
+\texttt{legend()} & Permite definir rótulos para las distintas líneas o curvas de la gráfica\\ 
+\texttt{grid} & Dibuja una rejilla. Con \texttt{grid off} desaparece la cuadrícula\\ 
+\texttt{axis([xmin xmax ymin ymax])} & Fija los valores máximos y mínimos de los ejes\\ 
+\texttt{axis equal} &Establece que la escala de los ejes sea la misma\\ 
+\texttt{axis square} & Fija que la gráfica sea un cuadrado\\ 
+\end{longtable}
+
+\subsection{Gestión de índices alfabéticos y glosario}
+Para gestionar el índice alfabético se ha utilizado el paquete \ttcolorc{imakeidx}\index{imakeidx}. Se ha optado por generar un índice alfabético con tres columnas y con una letra antes de cada grupo de palabras del índice. Para ello se ha redefinido el entorno \ttcolor{theindex}\index{theindex}.
+
+Para incluir algo en el índice el comando standard es \ttcolorc{index} y además se han creado un par de comandos: el comando \ttcolorc{indexit} que pone la palabra correspondiente en cursiva y además se incluye en el índice y \ttcolorc{ind} que es idéntica a \ttcolorc{index}.
+
+Para los glosarios se utiliza el paquete \ttcolor{glossaries}\index{glossaries} cuyo uso ya ha sido explicado.
+
+\subsection{Ajustes en fórmulas}
+La escritura de fórmulas en \LaTeX\ requiere el conocimiento de un conjunto de comandos que se encuentran muy bien explicados en el documento \ttcolor{mathmode.pdf}. Uno de los comandos que facilitan esta escritura y algunos efectos especiales se basan en el uso de los paquetes \ttcolor{cancel}\index{cancel} y \ttcolor{kbordermatrix}\index{kbordermatrix}. Para permitir la escritura de matrices con diferentes limitadores, hemos utilizado el paquete \ttcolor{array}\index{array}.
+
+Debido a un bug de  \LuaLaTeX\ es necesario escribir fórmulas demasiado anchas mediante el entorno \comando{begin\{equationw\}}\index{equationw}. Un ejemplo se muestra a continuación y el resultado del mismo posteriormente.
+
+\begin{LTXexample}[pos=b, hsep=15pt,width=\textwidth]
+\begin{equationw}
+\E\left[ {Y} \right]=\E\left[ {\left( {X-m_{X}} \right)^{n}} \right]=\begin{cases}
+1\times 3 \times \cdots \times \left( {2k-1} \right)\sigma_{X}^{2k}=\frac{\left( {2k} \right)!\sigma_{X}^{2k}}{2^{k}k!}&\textrm{ para }n=2k \\
+0 &\textrm{ para }n=2k +1
+\end{cases}
+\end{equationw}
+\end{LTXexample}
+Podemos observar la posición del número de ecuación que se ha desplazado debajo de la fórmula. Para crear el entorno que ha permitido resolver este error (el número de ecuación se desplazaba a la derecha), ha sido necesario cargar el paquete \ttcolor{environ}.
+
+También para corregir otro bug de \LuaLaTeX\ hemos introducido el comando \ttcolorc{sqrtlua}\index{sqrtlua} que evita el desplazamiento del contenido bajo el signo de la raíz cuando dicho contenido tiene una altura superior a un renglón. Esta definición hay que encontrarla en el bloque de gestión de fuentes.
+
+\subsection{Hiperenlaces}\index{hyperref}
+
+La creación de los hiperenlaces en los documentos escritos en \LaTeX\ se gestiona mediante el paquete \ttcolor{hyperref}. La documentación de este paquete es extensa y muy detallada y permite, por ejemplo, manejar con facilidad los colores de los hiperenlaces, la utilización de comandos inteligentes como \ttcolorc{autoref}\index{autores}, etc. 
+
+El ajuste más genérico de \ttcolor{hyperref} se ha realizado en esta hoja de estilo pero adicionalmente se han definido otros ajustes en el fichero principal de manera que, por ejemplo, se generen ficheros pdf con palabras claves que les permitan ser localizados con los buscadores, como podemos ver en la líneas de código siguientes:
+
+\begin{lstlisting}[frame=none]
+\hypersetup
+	{
+ 	linkcolor=black, %Tocar para poner color en enlaces
+	pdfauthor={\elautor},
+	pdftitle={\eltitulo}, 
+	citecolor=black, %Tocar para poner color en enlaces, eg blue
+	pdfkeywords={Formato de Libro para la ETSI, Universidad de Sevilla}	
+	 }
+\end{lstlisting}
+  
+Dentro de este apartado, mencionar la utilización de los paquetes \ttcolor{zref-lastpage} y \ttcolor{zref-user}\index{zref-lastpage}\index{zref-user} para detectar el número total de páginas de un documento, que viene dado por \comandos{zpageref}{Lastpage}, o bien el ajuste que se realiza sobre las direcciones url, del paquete \ttcolor{url}\index{url}, que ha sido cargado automáticamente.
+
+\subsection{Listado de códigos}
+Es habitual en textos escritos en la Escuela el uso de listados de códigos de muy diversa índole. Nosotros hemos elegido el paquete \ttcolor{listings}\index{listings} para gestionarlos en nuestros documentos. Este paquete se encuentra perfectamente documentado, lo que nos ha permitido realizar algunos ajustes que hemos considerado necesarios. 
+
+En el caso de utilizar \LaTeX\ es necesario que los símbolos no habituales se declaren, como hemos hecho en el siguiente bloque:
+\begin{lstlisting}[frame=none]
+\ifluatex
+\else
+\lstset{literate=%
+    {á}{{\'a}}1
+    {é}{{\'e}}1
+    {í}{{\'i}}1
+    {ó}{{\'o}}1
+    {ú}{{\'u}}1
+    {Á}{{\'A}}1
+    {É}{{\'E}}1
+    {Í}{{\'I}}1
+    {Ó}{{\'O}}1
+    {Ú}{{\'U}}1
+    {ñ}{{\~{n}}}1
+    {º}{{\textsuperscript{\b{o}}}}1
+    {ª}{{\textsuperscript{\b{a}}}}1
+    {¿}{{?`}}1
+}
+\fi
+\end{lstlisting}
+%
+Y también hemos tenido que ajustar determinados problemas relacionados con el uso de los idiomas español e inglés.  Por último, hemos ajustado el ``caption'' de los códigos mediante la declaración de un formato y modificado ligeramente la manera en la que se realiza el listado de los mismos, mediante el siguiente conjunto de instrucciones.
+ 
+\begin{lstlisting}[frame=none]
+\makeatletter
+	\renewcommand*{\l@lstlisting}[2]{\@dottedtocline{1}{.1em}{2.8em}{\tocsecc #1}{\tocsecc #2}}
+\makeatother
+\end{lstlisting}
+
+\subsection{Entornos, teoremas y similares}
+En este apartado hemos agrupado un conjunto de paquetes relacionados con la creación de entornos específicos y estructuras como los teoremas y elementos similares.
+
+En primer lugar, utilizamos el paquete \ttcolor{mdframed}\index{mdframed} para poder crear cajas sombreadas que se continúan a través de más de una página. Aunque no se ha utilizado en este estilo, merece señalarse la existencia del paquete \ttcolor{tcolorbox}\index{tcolorbox} que permite una gestión probablemente más flexible con este mismo fin.
+
+A continuación, señalamos la creación del entorno \ttcolor{Resumen} que permite realizar resúmenes en el lugar del texto que nos interese, como ya hemos mencionado y mostrado en un apartado anterior.
+
+Para la gestión de los teoremas y elementos similares hemos escogido el paquete \ttcolor{ntheorem}\index{ntheorem} junto con una serie de opciones. Si analizamos las siguientes líneas de código, en la que se define el entorno \ttcolor{teor}:
+
+\begin{lstlisting}[frame=none, numbers=left, xleftmargin=2em]
+\theoremnumbering{arabic}
+\theoremheaderfont{\aheadteoremas}
+\theoremseparator{\hspace{.2em}}
+\theorembodyfont{\itshape}
+\newtheorem{teor}{\theoremname}[section]
+\end{lstlisting}
+
+Podemos observar que el la línea \ttcolor{1} el esquema de numeración será arábico, esto es, mediante números. Para su declaración utilizaremos el comando \comando{aheadteoremas} que habíamos definido anteriormente y nos indica que utilizaremos una determinada fuente con las características que habíamos señalado. El enunciado del teorema irá en \emph{cursiva} y el nombre que usaremos viene marcado por el macro  \comando{theoremname}. Por último, al incluir el término \ttcolor{section} en la línea \ttcolor{5} estamos señalando que la numeración de los teoremas se realizará al nivel de sección; esto es, las siguientes líneas de código, en las que también hemos utilizado el entorno \ttcolor{demo}, generan el teorema debajo de las mismas.
+
+%\begin{LTXexample}[pos=b, hsep=15pt,width=\textwidth]
+\begin{lstlisting}[frame=none]
+\begin{teor}\label{th04-02} Si una función $f\left( {x} \right)$ tiene una segunda derivada que es no negativa (positiva) en un intervalo dado, la función es convexa (estrictamente convexa) en ese intervalo.
+\end{teor}
+\begin{demo} Para probar el teorema, desarrollemos la función en serie de Taylor alrededor del punto $x_{0}$:
+\begin{equation}\label{eq04-321}
+f\left( {x} \right)=f\left( {x_{0}} \right)+f^{\prime}\left( {x_{0}} \right)\left( {x-x_{0}} \right)+\frac{f^{\prime \prime}\left( {x^{\ast}} \right)}{2}\left( {x-x_{0}} \right)^{2}
+\end{equation}
+donde $x^{\ast}$ está entre $x_{0}$ y $x$. Por hipótesis, $f^{\prime \prime}\left( {x^{\ast}} \right)\ge 0$, así que el último término es no negativo para todo $x$.
+
+...
+\end{demo}
+\end{lstlisting}
+%\end{LTXexample}
+
+\begin{teor}\label{th04-02} Si una función $f\left( {x} \right)$ tiene una segunda derivada que es no negativa (positiva) en un intervalo dado, la función es convexa (estrictamente convexa) en ese intervalo.
+\end{teor}
+\begin{demo} Para probar el teorema, desarrollemos la función en serie de Taylor alrededor del punto $x_{0}$:
+\begin{equation}\label{eq04-321}
+f\left( {x} \right)=f\left( {x_{0}} \right)+f^{\prime}\left( {x_{0}} \right)\left( {x-x_{0}} \right)+\frac{f^{\prime \prime}\left( {x^{\ast}} \right)}{2}\left( {x-x_{0}} \right)^{2}
+\end{equation}
+donde $x^{\ast}$ está entre $x_{0}$ y $x$. Por hipótesis, $f^{\prime \prime}\left( {x^{\ast}} \right)\ge 0$, así que el último término es no negativo para todo $x$.
+
+...
+\end{demo}
+
+Existen un conjunto de entornos definidos de manera análoga al anterior y su uso puede ser fácilmente deducible del ejemplo anterior.
+
+\subsection{Otros comandos}
+Finalizamos la descripción del fichero señalando la existencia de un grupo de comandos muchos de ellos únicamente utilizables en la escritura de un texto como el presente. Otros, como las definiciones de las cabeceras de los exámenes o el que nos permite crear una dedicatoria de nuestro texto. Ambos se gestionan en el fichero principal con líneas de código similares a las siguientes:
+
+\begin{lstlisting}[frame=none]
+\dedicatoria{A nuestras familias\\A nuestros maestros} 
+\titulacion{ Grado en Ingeniería de Tecnología de Telecomunicación}
+\asignatura{Comunicaciones Digitales}
+\convocatoria{Primera convocatoria. Curso 2013-14}
+\fecha{3/02/2014}
+\end{lstlisting}
+%
+con el resultado que ya hemos mostrado.
+
+\section{A modo de conclusión}
+Hemos tratado de mostrar en este capítulo los elementos más destacados del diseño de la hoja de estilo que hemos realizado para nuestra Escuela. Como hemos dicho con anterioridad, hay mucho de gusto personal en el diseño pero también existe un considerable compromiso con tendencias actuales en la maquetación de textos científicos. 
+
+Como todo diseño, es manifiestamente mejorable y nuestro deseo es que este capítulo permita a quien lo desee adaptarla a sus criterios. Tenemos intención de crear una página de preguntas y respuestas que permitan, con la aportación de todos, mejorar esta primera aportación a la creación de una imagen corporativa de los documentos generados en nuestra Escuela.
+
+ 
+
+

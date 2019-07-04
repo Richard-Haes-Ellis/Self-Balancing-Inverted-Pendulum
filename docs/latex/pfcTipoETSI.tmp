@@ -1,0 +1,6 @@
+\begin{equationw}
+\E\left[ {Y} \right]=\E\left[ {\left( {X-m_{X}} \right)^{n}} \right]=\begin{cases}
+1\times 3 \times \cdots \times \left( {2k-1} \right)\sigma_{X}^{2k}=\frac{\left( {2k} \right)!\sigma_{X}^{2k}}{2^{k}k!}&\textrm{ para }n=2k \\
+0 &\textrm{ para }n=2k +1
+\end{cases}
+\end{equationw}

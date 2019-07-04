@@ -1,0 +1,466 @@
+% !TEX root =../LibroTipoETSI.tex
+\chapter{Ejemplo de Capítulo}\LABCHAP{CAPEJ}
+\pagestyle{esitscCD}
+\epigraph{ Una de las virtudes del ingeniero es la eficiencia.  }{Guang Tse}
+
+%\lettrine[lraise=0.7, lines=1, loversize=-0.25]{E}{l} 
+\lettrine[lraise=-0.1, lines=2, loversize=0.25]{E}l \emph{formato de capítulo }\index{formato!de capítulo} abarca diversos factores. Un capítulo puede incluir, además de texto, los siguientes elementos:
+%http://en.wikibooks.org/wiki/LaTeX/List_Structures#Customizing_Lists
+
+\begin{itemize}\itemsep1pt \parskip0pt \parsep0pt
+\item \indexit{Figuras}
+\item \indexit{Tablas}
+\item \indexit{Ecuaciones}
+\item \indexit{Ejemplos}
+\item \indexit{Resúmenes}, con recuadros en gris, por ejemplo
+\item \indexit{Lemas}, \indexit{corolarios}, \indexit{teoremas},... y sus demostraciones
+\item \indexit{Cuestiones}
+\item \indexit{Problemas} propuestos
+\item ...
+\end{itemize}
+
+En este capítulo se propone incluir ejemplos de todos estos elementos, para que el usuario pueda modificarlos fácilmente para su uso. Consulte el código suministrado, para ver cómo se escriben en \LaTeX.
+
+\section{Ejemplo de sección}\LABSEC{SEC}
+%
+En la \FIG{FIG} se incluye a modo de ejemplo la imagen del logo de la \gls{ETSI} \footnote{Se usa aquí el package de acrónimos, que la primera vez define el acrónimo y ya luego sólo incluye el mismo. Esto facilita luego generar de forma automática la lista de acrónimos.}. El código para que aparezca dicha imagen se muestra en el cuadro siguiente:
+
+
+
+Si nos detenemos en los comandos que hemos utilizado, con \ttcolor{width} se controla el ancho, y se escala así el tamaño de la imagen. En \LaTeX existen diversas opciones para situar la figura en la página: con \ttcolor{t} o \ttcolor{b} se le indica que las incluya arriba o abajo (top/bottom) y con \ttcolor{!} se le pide que la deje dónde está, tras el texto anterior.
+
+
+\begin{lstlisting}[language=TeX,caption={Código para incluir una figura}, breaklines=true, label=prg01-01]
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=3 cm]{capituloLibroETSI/figuras/logoESI.pdf}
+\caption{Logo de la ETSI}
+\label{fig:figura1}
+\end{figure}
+\end{lstlisting}
+
+
+\begin{figure}[htbp]
+\centering
+%\includegraphics[width=0.2\linewidth]{capituloLibroETSI/figuras/logoESI.pdf}
+\includegraphics[width=3 cm]{CapituloLibroETSI/figuras/logoESI.pdf}
+\caption{Logo de la ETSI}
+\LABFIG{FIG} %Esto es una forma propia de los autores de gestionar las etiquetas y referencias
+\end{figure}
+%
+
+Para dar énfasis a algún texto, usamos \ttcolorc{emph}. %Este comando es de los denominados \emph{inteligentes} apareciendo el texto \emph{resaltado} dependiendo del contexto.  
+Así, por ejemplo, 
+\begin{caja}
+\emph{No olvide intentar utilizar este formato en sus publicaciones de la \gls{ETSI}}
+\end{caja}
+hace aparecer el anterior texto en itálica. Pero si escribiésemos, por ejemplo, 
+\begin{caja}
+\emph{No olvide intentar utilizar este formato \emph{siempre} en sus publicaciones de la \gls{ETSI}}
+\end{caja}
+vemos cómo hemos destacado la palabra ``siempre'' en torno a su contexto. Para ello, hemos escrito, realmente, \comandos{emph}{siempre} dentro de la frase original.
+%
+\subsection{Ejemplo de subsección}\LABSSEC{EjSS}
+%
+Si se usaba \ttcolorc{section} para indicar una sección, se utiliza \ttcolorc{subsection} para una subsección.
+
+
+\section{Elementos del texto}
+%
+
+\subsection{Figuras}
+
+Además del tipo de figura que vimos anteriormente, el normal, podemos desear incluir una figura en modo apaisado ocupando toda la página. Para ello utilizamos el entorno de figura siguiente \comandos{begin}{sidewaysfigure}, cuyo resultado se puede observar en la \FIG{FigApaisada}. 
+
+\begin{sidewaysfigure}
+\centering
+%\includegraphics[width=0.2\linewidth]{capituloLibroETSI/figuras/logoESI.pdf}
+\includegraphics[width=3 cm]{CapituloLibroETSI/figuras/logoESI.pdf}
+\caption{Logo de la ETSI}
+\LABFIG{FigApaisada}
+\end{sidewaysfigure}
+
+Aunque puede optar por la forma que desee, en el fichero \ttcolor{notacion.sty} se incluyen definiciones para que pueda usar \comandos{LABFIG}{etiqueta} y \comandos{FIG}{etiqueta} para poner una etiqueta y hacer referencia a la misma luego. Además, está definido para que \comandos{FIG}{etiqueta} incluya por delante el término Figura.
+
+\subsection{Tablas}
+A modo de ejemplo, \TAB{Tab1} incluye un ejemplo de tabla. Al igual que con figura, si usa \ttcolor{notacion.sty} puede usar \comandos{LABTAB}{etiqueta} y \comandos{TAB}{etiqueta} para poner una etiqueta y una referencia, y el \comandos{TAB}{etiqueta} ya incluye el nombre Tabla por delante.
+
+Una alternativa al uso de estos comandos está representado por el uso del comando \ttcolorc{autoref\{etiqueta\}} que, en conjunción con el paquete \ttcolor{babel} genera automáticamente los nombres de Figura o Tabla, en función de la etiqueta correspondiente.
+
+\begin{table}[h]
+%\small
+\caption{Valores de parámetros}
+\begin{center}
+\begin{tabular}{p{7cm}p{2cm}p{2cm}} %Con esto definimos el ancho de cada columna
+Definición & notación & valor\\
+ \hline
+Potencia transmitida	(entregada a antena) & $P_{et}$ & -5 a 20 dBm	\\
+Ganancia antenas & $G$ & $40.5$ dBi\\	
+ \hline
+\end{tabular}
+\end{center}
+\LABTAB{Tab1}
+\end{table}%
+
+\subsection{Listados de programas}
+Es muy habitual en nuestros documentos que tengamos que incluir listados de programas. Para ello, se propone la utilización de un paquete denominado \ttcolor{listings}. Se obtiene con él un listado como el mostrado en el \autoref{prg02-01} de \matlab siguiente: 
+
+\begin{lstlisting}[language=Matlab,caption={Representación de la función $\rect(t-T/2)$}, breaklines=true, label=prg02-01]
+clear all
+close all
+T = 1;
+A = 1;
+L = 100;
+tstep = T/L;                                
+t = 0:tstep:T-tstep;   
+g_t = A*ones(1,L); 
+figure(1);
+subplot(211);
+h=plot(t,g_t); axis( [0 T -A-0.1 A+0.1]);
+set(h,'linewidth', 1.0);
+ylabel('g(t)'), xlabel('t[s]'); grid on;
+
+g_n = g_t;
+subplot(212);
+h=stem(g_n, '.', 'filled'); axis( [1 L -0.1 A+0.1]);
+set(h,'linewidth', 1.0);
+ylabel('g(n)'), xlabel('n');
+\end{lstlisting}
+
+También se puede generar en este caso una relación de los códigos usados en nuestro documento, de manera equivalente a la relación de figuras o tablas. Para ello, observar la correspondiente codificación en el fichero principal.
+ 
+\subsection{Ecuaciones}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Para escribir expresiones matemáticas, como por ejemplo $2+2=4$, sólo hace falta que meta la expresión entre símbolos \ttcolor{\$}. En el fichero notacion.sty se incluyen muchas definiciones para facilitar la escritura de estas expresiones y de ecuaciones. Para escribir una ecuación, con una o más líneas, se aconseja utilizar \ttcolor{align}, como en el siguiente ejemplo, en las ecuaciones \EQ{Eq1}-\EQ{Eq3},
+\begin{align}
+ T     &=kT_b  \LABEQ{Eq1}, \\
+ R_b&=\frac{1}{T_b }	, \\
+ D    &=\frac{1}{T}=\frac{R_b }{k}=\frac{R_b}{\log_2 M}. \LABEQ{Eq3}
+\end{align}
+Si no quiere numerar una línea, utilice las instrucción \comando{nonumber} antes de poner \verb+\\+  para escribir la siguiente línea. Y con \& puede alinear las ecuaciones. 
+
+Un ejemplo más complejo de ecuaciones sería el siguiente: decimos que el vector aleatorio $\vc{Z}$ es gaussiano si su función densidad de probabilidad conjunta viene dada por:
+\begin{equation}\label{eq02-x131}
+f_{\vc{Z}}\left( {\vc{z}} \right)= \frac{1}{\left( {2\pi} \right)^{N}{\left| {\vc{C_{Z}}} \right|}^{1/2}}\e^{-\frac{1}{2}\left( {\vc{z}-\vc{m_{Z}}} \right)\trs\vc{C_{Z}}^{-1}\left( {\vc{z}-\vc{m_{Z}}} \right) }
+\end{equation}
+con el vector media la matriz $\vc{m_{Z}}$ y la matriz de covarianza real $\vc{C_{Z}}$ $\left( {2N \times 2N} \right)$ simétrica definida positiva dado por:
+\begin{equation}\label{eq02-x132}
+\vc{m_{Z}}=\begin{bmatrix}
+\vc{m_{X}}\\
+\vc{m_{Y}}
+\end{bmatrix}, \quad
+\vc{C_{Z}}=\begin{bmatrix}
+\vc{C_{X\hphantom{X}}} & \vc{C}_\vc{XY}\\
+\vc{C_{YX}} & \vc{C_{Y\hphantom{X}}}
+\end{bmatrix}
+\end{equation}
+
+con el vector $\bm{\omega}$ dado por:
+\begin{equation}\label{eq02-y410}
+\bm{\omega}=\begin{bmatrix}
+\omega_{1}\\
+\vdots \\
+\omega_{N}\\
+\omega_{N+1}\\
+\vdots \\
+\omega_{2N}
+\end{bmatrix}
+\end{equation}
+Si no desea que se numere una ecuación puede poner asterisco, tanto en el entorno \verb+equation+ como \verb+align+.
+
+
+\subsection{Ejemplos}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Para incluir un ejemplo, utilize el entorno \comando{ejmp}, usando el entorno \comando{begin\{ejmp\}} y \comando{end\{ejmp\}}, y para la solución el entorno  \comando{begin\{sol\}}. 
+
+\begin{ejmp}
+Calcule $2+2$.
+\end{ejmp}
+\begin{sol}
+%
+Para resolver esto se puede utilizar que $1+1=2$, de la siguiente forma
+\begin{equation*}% con el * se evita que se numere la ecuación
+2+2=(1+1)+(1+1)=4,
+\end{equation*}
+donde se ha contado, pruebe a utilizar los dedos de su mano, a cuatro.
+\end{sol}
+
+Observad que antes de comenzar el ejemplo y tras su finalización se han incluido unos \emph{filetes} a modo de resalte en el texto. En el caso de una serie de ejemplos, los entornos \comando{begin\{ejmpn\}} y  \comando{begin\{soln\}}, junto con los entornos de cierre correspondientes, permiten que no existan estos filetes entre los ejemplos y soluciones intermedias de la serie.
+ 
+\subsection{Lemas, teoremas y similares}
+
+Se incluyen ejemplos de estos elementos de texto. Empezamos con la \DFN{D11} y la \PRP{P11}:
+
+\begin{defn}[Suma]\LABDFN{D11}
+ La suma es la operación que permite contar sobre un número, otro.
+\end{defn}
+
+
+\begin{prop}[Suma]\LABPRP{P11}
+ Los números enteros se pueden sumar.
+\end{prop}
+
+
+\begin{lema}[Suma de 1 y 1]\LABLEM{L11}
+ La suma $1+1$ es igual a $2$.
+\end{lema}
+\begin{proof}
+Ponga un dedo a la vista, junto a otro, y cuéntelos.
+\end{proof}
+
+
+\begin{teor}[Suma]\LABTHM{T11}
+ La suma de cualquier número y dos es igual a la suma del mismo número más uno más uno.
+\end{teor}
+\begin{proof}
+Por inducción y el \LEM{L11}.
+\end{proof}
+
+\begin{coro}[Contables]\LABCOR{C11}
+  Los números enteros son contables.
+\end{coro}
+\begin{proof}
+Por el \THM{T11}.
+\end{proof}
+
+
+\subsection{Resúmenes}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Para incluir un resumen de una sección o un conjunto de secciones o en cualquier otro punto que consideremos interesante, se utiliza el entorno \comando{begin\{Resumen\}}, que admite como parámetro opcional un nombre que queramos asignarle al resumen. Por defecto, se denomina ``Resumen''. Observar que se ha modificado la cabecera de las páginas impares. Una vez finalizado el resumen, con el comando \comando{end\{Resumen\}}, se recupera la anterior cabecera automáticamente. Los resúmenes que se deseen incluir aparecen en la tabla de contenidos como una sección sin numeración, con el nombre elegido o el nombre por defecto de Resumen. En el siguiente ejemplo hemos utilizado este parámetro opcional de nombre.
+
+\begin{Resumen}[Resumen de Teoría de Información]
+\noindent Debido al considerable número de definiciones, teoremas y propiedades que hemos descrito en los apartados anteriores, vamos a presentar un resumen de los principales resultados, no necesariamente en el mismo orden que el expuesto anteriormente. Supondremos en este resumen que las variables aleatorias $X$,  $Y$ y $Z$ son discretas, definidas en el alfabeto $\calg{X}$, $\calg{Y}$  y  $\calg{Z}$ respectivamente. 
+
+\subsubsection*{Entropía de una variable aleatoria discreta}
+Se define la entropía $H\left( {X} \right)$ de una variable aleatoria discreta $X$ , con función masa de probabilidad $p\left( {x} \right)$, en la forma:
+\begin{equation*}
+H\left( {X} \right)= -\sum_{x\in \calg{X} }{p\left( {x} \right)\log p\left( {x} \right)}=\E\left[ -{\log p\left( {X} \right)} \right]
+\end{equation*}
+\begin{enumerate}
+\item Se cumple:
+\begin{equation*}
+ 0\le H\left( {X} \right) \le \log \card{\calg{X}}
+\end{equation*}
+ con la igualdad en la izquierda si y sólo si $p\xb{i}=1$ para algún $x_{i} \in \calg{X}$ y con la igualdad a la derecha si y sólo si la variable aleatoria está uniformemente distribuida; esto es, $p\xb{i}=1/\card{\calg{X}} \; \mbox{para todo }i$.
+ \item $H\left( {X} \right)=0$ si y sólo si $X$ es determinista.
+\item $H\left( {X} \right)=H\left( {p\left( {x} \right)} \right)$ es una función cóncava en $p\left( {x} \right)$.
+\item Se define la \emph{Función de Entropía Binaria} en la forma:
+\begin{equation*}
+h_{b}\left( {p} \right) \eqdef -p\log p-\left( {1-p} \right)\log\left( {1-p} \right)\end{equation*}
+\item La función entropía binaria $h_{b}\left( {p} \right)$ es una función cóncava en $p$.
+\item Si $X$ y $\hat X$ son dos variables aleatorias estadísticamente independientes igualmente distribuidas, 
+\begin{equation*}
+\Pr\left( {X=\hat X} \right) \ge 2^{-H\left( {X} \right)}
+\end{equation*}
+con la igualdad si y sólo si $X$ tiene una distribución uniforme.
+\end{enumerate}
+
+\subsubsection*{Entropía conjunta y entropía condicional}
+Definimos la \emph{entropía conjunta} de las variables aleatorias $X$ e $Y$, $H\left( {X,Y} \right)$ en la forma:
+\begin{equation*}
+H\left( {X,Y} \right)=\sum_{x\in \calg{X} }{\sum_{y\in \calg{Y}}{p\left( {x,y} \right)\log \frac{1}{p\left( {x,y} \right)}}}=\E\left[ {-\log p\left( {X,Y} \right)} \right]
+\end{equation*}
+
+Definimos la \emph{entropía condicional} $H\left( {X \mid Y} \right)$ en la forma:
+\begin{align*}
+H\left( {X \mid Y} \right)&=\sum_{y\in \calg{Y}}{p\left( {y} \right)H\left( {X \mid Y= y} \right)}=  \\
+&=-\sum_{x\in \calg{X}}{\sum_{y\in \calg{Y}}{p\left( {x,y} \right) \log p\left( {x \mid  y} \right)}}= \\
+&=\E\left[ {-\log p\left( {X\mid Y} \right)} \right]
+\end{align*}
+
+\begin{enumerate}
+\itemv[10]
+\begin{equation*}
+H\left( {X,Y} \right) \le H\left( {X} \right)+ H\left( {Y} \right)
+\end{equation*}
+con la igualdad si y sólo si $X$ e $Y$ son estadísticamente independientes.
+\itemv[10]
+\begin{align*}
+H\left( {X\mid Y} \right) &\le H\left( {X} \right) \\
+H\left( {Y\mid X} \right) &\le H\left( {Y} \right)
+\end{align*}
+con la igualdad si y sólo si $X$ e $Y$ son estadísticamente independientes.
+\item $H\left( {X\mid Y} \right)=0$ si y sólo si $X$ es una función de $Y$.
+\itemv[10]
+\begin{equation*}
+H\left( {X \mid X} \right) =0
+\end{equation*}
+\itemv[10] 
+\begin{equation*}
+H\left( {X,Y} \right)=H\left( {Y} \right)+H\left( {X\mid Y} \right)
+\end{equation*}
+\itemv[10] 
+\begin{equation*}
+H\left( {X,Y} \right)=H\left( {X} \right)+H\left( {Y\mid X} \right)
+\end{equation*}
+\itemv[10] 
+\begin{equation*}
+H\left( {X,Y \mid Z} \right)=H\left( {X\mid Z} \right)+H\left( {Y\mid X,Z} \right)
+\end{equation*}
+\item \emph{Desigualdad de Fano} Sean $X$ y $\hat{X}$ dos variables aleatorias que toman valores en el mismo alfabeto \calg{X}. Se verifica:
+\begin{equation*}
+H\left( {X\mid \hat{X}} \right) \le h_{b}\left( {p\xb{e}} \right)+p\xb{e}\log \left( {\card{\calg{X}}-1} \right)
+\end{equation*}
+\end{enumerate}
+%
+\subsubsection*{Reglas de las cadenas}
+Sea $\mathbf{X}$   un vector formado por las $N$ variables aleatorias $X_{i}, i=1, 2, \ldots,N$.
+\begin{enumerate}
+\item \emph{Regla de la cadena para la entropía}
+\begin{align*}
+H\left( {X_{1}, X_{2}, \ldots, X_{N}} \right)&=\sum_{i=1}^{N}{H\left( {X_{i}\mid X_{1},\ldots, X_{i-1}} \right)}= \\
+&=H\left( {X_{1}} \right)+H\left( {X_{2}\mid X_{1}} \right)+ \cdots +H\left( {X_{N}\mid X_{1},\ldots, X_{N-1}} \right) 
+\end{align*}
+\item \emph{Regla de la cadena para la entropía condicional}
+\begin{equation*}
+H\left( {X_{1}, X_{2}, \ldots, X_{N} \mid Y} \right)=\sum_{i=1}^{N}{H\left( {X_{i}\mid X_{1},\ldots ,X_{i-1}, Y} \right)}
+\end{equation*}
+\item \emph{Regla de la cadena para la información mutua}
+\begin{equation*}
+I\left( {X_{1}, X_{2}, \ldots, X_{N} ; Y} \right)=\sum_{i=1}^{N}{I\left( {X_{i} ;Y \mid X_{1},\ldots, X_{i-1}} \right)}
+\end{equation*}
+\item \emph{Regla de la cadena para la Información Mutua Condicional}
+\begin{equation*}
+I\left( {X_{1}, X_{2}, \ldots, X_{N} ; Z \mid Y} \right)=\sum_{i=1}^{N}{I\left( {X_{i} ;Z \mid X_{1},\ldots, X_{i-1},Y} \right)}
+\end{equation*}
+\end{enumerate}
+\end{Resumen}
+
+\section{Una nueva sección después del resumen}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%														
+%%%%%%%%%%					Problemas							
+%%%%%%%%%%														
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\cleardoublepage
+\subchapter{Problemas Propuestos}
+\setenumerate[1]{label=\bfseries{\alph*)\quad}, labelindent=\parindent}
+\setenumerate[2]{label=\bfseries\arabic*.}
+\setenumerate[3]{label=\bfseries{\roman*})}
+\pagestyle{probprop}
+\captionsetup[figure]{textformat=simple}
+
+\noindent Esto es un ejemplo de cómo incluir cuestiones y/o problemas al final de un capítulo, con o sin solución. Para poner un problema o cuestión, usar  \comando{begin\{prob\}} y \comando{end\{prob\}}. Para incluir la solución, a continuación usar \comando{begin\{soln\}} seguido del texto terminado en \comando{end\{soln\}}.
+
+% P02-01
+\begin{prob}
+Sean $A$, $B$ y $C$ sucesos de un cierto experimento con probabilidades dadas por:
+\begin{align*}
+\Pr\left( {A} \right)=&\frac{1}{3}\\
+\Pr\left( {B} \right)=&\frac{1}{4}\\
+\Pr\left( {C} \right)=&\frac{1}{5}\\
+\Pr\left( {A\cap B} \right)=&\frac{1}{12}\\
+\Pr\left( {A\cap C} \right)=&\frac{1}{15}\\
+\Pr\left( {B\cap C} \right)=&\frac{1}{20}\\
+\Pr\left( {A\cap B\cap C} \right)=&\frac{1}{30}
+\end{align*}
+\begin{enumerate}
+\item ¿Son los sucesos independientes dos a dos? ¿Son estadísticamente independientes?
+\item Encontrar $\Pr\left( {A\cup B} \right)$.
+\item Encontrar $\Pr\left( {A\cup B\cup C} \right)$.
+\end{enumerate}
+\end{prob}
+
+\begin{prob}
+Suponer que tenemos una moneda con las siguientes características: cuando se lanza, la probabilidad de que salga cara es  $\Pr\left( {c} \right)=p$ y la probabilidad de que salga cruz $\Pr\left( {+} \right)=q$. Lanzamos dos veces la moneda y queremos conocer acerca de la independencia estadísticade los siguientes sucesos:
+\begin{align*}
+A& = \textrm{Sale c en la primera tirada}\\
+B& = \textrm{En las dos tiradas sale lo mismo}\\
+C& = \textrm{Sale c en la segunda tirada}
+\end{align*}
+\end{prob}
+
+\begin{prob}
+Determinar la media, la autocorrelación y el espectro densidad de potencia de la salida de un sistema con respuesta impulsiva dada por:
+\begin{equation*}
+h(n) = \begin{cases}
+1 &n=0,2 \\
+-2 &n=1  \\
+0 & \text{en cualquier otro caso} \\
+\end{cases}
+\end{equation*}
+cuando la señal de entrada es un ruido blanco $X(n)$ con varianza 
+$\sigma_X^2$.
+\end{prob}
+
+\begin{soln}
+Si el ruido es blanco, su valor esperado será cero y su espectro densidad de potencia será una constante: $S_{X}\left( {\Omega} \right)=C$. Calculemos su autocorrelación. Se tiene:
+\begin{align*}
+ R_X (k)&=\L[F]\ ^{-1}\left[ {S_X \left( \Omega \right)} 
+\right]=\L[F]\ ^{-1}\left[ C \right]=\frac{1}{2\pi }\int_{-\pi }^\pi 
+{Ce^{jk\Omega }\mathrm{d}\Omega } =
+\begin{cases}
+   {k\ne 0}	   &  \frac{C}{2\pi }\left. {\frac{\e^{jk\Omega }}{jk}} \right|_{-\pi }^\pi\\
+     k=0 & C \\
+\end{cases}
+\;\Rightarrow \\ 
+ R_X (k)&=C\delta(k)=
+ \begin{cases}
+      C & k= 0\\
+      0 & k \ne 0
+\end{cases}
+ \end{align*}
+
+Ahora bien:  (...)
+\end{soln}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%:Material suplementario
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subchapter{Anexo}
+\pagestyle{esitscCD}
+%
+
+\epigraph{Si quiere introducir un separador dentro de un capítulo puede utilizar la instrucción subchapter. Esto le puede interesar, por ejemplo, para introducir alguna información adicional al final de un capítulo como un anexo al mismo.}
+
+
+%\noindent 
+\lettrine[lraise=-0.1, lines=2, loversize=0.25]{E}{n} las secciones que siguen vamos a repasar algunas materias que utilizamos ampliamente a lo largo del texto y que sostienen de forma rigurosa el estudio de las comunicaciones digitales.
+
+\section{Señales: definición y clasificación}
+%
+Una \index{señal} puede definirse como una función que transmite información generalmente sobre el estado o el comportamiento de un sistema físico, \cite{oppenheim}. Aunque las señales puedan representarse de muchas maneras, en todos los casos la información está contenida en la variación de alguna magnitud física. Matemáticamente se representan como una función de una  o más variables independientes. Por ejemplo, una señal de voz se puede representar como una función del tiempo y una imagen fotográfica puede representarse como una variación de la luminosidad respecto a dos parámetros espaciales. En cualquier caso, es una práctica común denotar como tiempo, $t$, a la variable independiente, en el caso de una variación continua de la variable independiente, y $n$ en caso contrario.
+%
+\subsection{Clasificación de señales}%
+Establezcamos a continuación una clasificación de las señales atendiendo a diversos puntos de vista.
+%
+\subsubsection*{Señales deterministas y aleatorias}
+%
+\index{señal!determinista}\index{señal!aleatoria} %% Índice
+Una señal se clasifica como determinista cuando no hay incertidumbre alguna acerca del valor que tiene en cualquier instante de tiempo. Estas señales pueden modelarse como una función matemática, por ejemplo, $g\left( {t} \right) = 10 \cos\left( {4\pi t^{2}} \right)$. 
+
+Una señal aleatoria es aquella para la que existe cierta incertidumbre respecto a su valor. Matemáticamente vamos a modelarla como una función muestra de un proceso aleatorio.
+
+Para que una señal transmita información debe tener un carácter aleatorio, \cite{wiener}. 
+%
+\subsubsection*{Señales periódicas y no periódicas.}
+%
+\index{señal!periódica}\index{señal!no periódica}
+Una señal $g(t)$ es periódica, con periodo $T_{0}$, si existe una cantidad $T_{0} >$0 tal que:
+\begin{equation}
+\label{eq01ms-1}
+g(t)=g(t+T_0 )\quad \forall t
+\end{equation}
+siendo $T_{0}$ el valor más pequeño que cumple esta relación. Una señal que no cumpla \eqref{eq01ms-1} se denomina no periódica.
+%
+\subsubsection*{Señales analógicas, discretas, muestreadas y digitales}
+%
+\index{señal!analógica}\index{señal!discreta}\index{señal!muestreada}\index{señal!digital}			%% Índice
+Una señal analógica $g(t)$ es aquella que está definida para todo $t$. Una señal discreta sólo está definida en un conjunto numerable\footnote{\label{foot02-01}Un conjunto  es numerable o contable cuando sus elementos pueden ponerse en correspondencia uno a uno con el conjunto de los números naturales. Con posterioridad veremos que el concepto de conjunto numerable o contable juega un papel importante en el desarrollo de numerosos aspectos de la teoría.} de valores del tiempo. Una señal muestreada está definida para todo instante de tiempo, aunque sólo puede tomar valores en un conjunto numerable y una señal digital es aquella que sólo está definida en un conjunto numerable de valores del tiempo y toma valores en un conjunto numerable.
+%
+
+
+
+%%%%%%%%%%%FIN
+
+
+\captionsetup[figure]{textformat=period}
+\endinput
+

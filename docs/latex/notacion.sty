@@ -1,0 +1,404 @@
+%:---------------------------Notación 
+%Toda esta notación es opcional, pero creemos que puede ser de mucha ayuda.
+%Juan José Murillo Fuentes y Javier Payán Somet. Copyright 2011. Todos los derechos reservados.
+
+%:---------------------------------------------------  Referencias
+%Puede usar los comandos \label y \ref, pero con lo de abajo se facilita el uso de múltiples etiquetas para ecuaciones, secciones,...
+%Etiquetas:
+\newcommand{\LABEQ}[1]{\label{eq:#1}}%\mathtt{[eq:#1]}\qquad %Equación
+\newcommand{\LABALG}[1]{\label{alg:#1}}%\mathtt{[lab:#1]}\qquad %Algoritmo
+\newcommand{\LABTAB}[1]{\label{tab:#1}}%{\tt [tab:$\text{$#1$}$]}} %Tabla
+\newcommand{\LABFIG}[1]{\label{fig:#1}}%{\tt [fig:$\text{$#1$}$]}} %Figura
+\newcommand{\LABTHM}[1]{\label{thm:#1}}%{\tt [thm:#1]}} % Teorema
+\newcommand{\LABPRP}[1]{\label{prp:#1}}%{\tt [prp:#1]}} % Proposición
+\newcommand{\LABLEM}[1]{\label{lem:#1}}%{\tt [lem:#1]}} % Lema
+\newcommand{\LABCOR}[1]{\label{cor:#1}}%{\tt [cor:#1]}} %Corolario 
+\newcommand{\LABDFN}[1]{\label{dfn:#1}}%{\tt [dfn:#1]}} %Definición
+%\newcommand{\LABFNT}[1]{\label{fnt:#1}}%{\tt [fnt:#1]}} %
+%
+%Referencias a las etiquetas anteriores, Incluyen el título. Puede cambiarlos aquí. Por ejemplo, si quiere "Fig." en vez de "Figura"...
+\newcommand{\EQ}[1]{\eqref{eq:#1}}%$^{\text{\tt [#1]}}$} %used to be {(\ref{eq:#1})}
+\newcommand{\ALG}[1]{~\ref{alg:#1}}
+%\newcommand{\TAB}[1]{Tabla ~\ref{tab:#1}}%$^{\text{\tt [#1]}}$}
+\newcommand{\TAB}[1]{\autoref{tab:#1}}%$^{\text{\tt [#1]}}$}
+%\newcommand{\FIG}[1]{Figura~\ref{fig:#1}} %$^{\text{\tt [#1]}}$} 
+\newcommand{\FIG}[1]{\autoref{fig:#1}} %$^{\text{\tt [#1]}}$} 
+
+%\newcommand{\FIG}[1]{Fig. \ref{fig:#1}} %$^{\text{\tt [#1]}}$} 
+\newcommand{\THM}[1]{Teorema~\ref{thm:#1}}%$^{\text{\tt [#1]}}$}
+\newcommand{\COR}[1]{Corolario~\ref{cor:#1}}%$^{\text{\tt [#1]}}$}
+\newcommand{\PRP}[1]{Propiedad~\ref{prp:#1}}%$^{\text{\tt [#1]}}$}
+\newcommand{\LEM}[1]{Lema~\ref{lem:#1}}%$^{\text{\tt [#1]}}$}
+\newcommand{\DFN}[1]{Definición~\ref{dfn:#1}}%$^{\text{\tt [#1]}}$}
+%\newcommand{\FNT}[1]{~\ref{fnt:#1}}%$^{\text{\tt [#1]}}$}
+
+%Etiquetas para títulos tipo capítulo, sección, subsección,...
+\newcommand{\LABCHAP}[1]{\label{chap:#1}}%{\tt [chap:#1]}}
+\newcommand{\LABAPEN}[1]{\label{apen:#1}}%{\tt [chap:#1]}}
+\newcommand{\LABSEC}[1]{\label{sec:#1}}%{\tt [sec:#1]}}
+\newcommand{\LABSSEC}[1]{\label{ssec:#1}}%{\tt [ssec:#1]}}
+\newcommand{\LABSSSEC}[1]{\label{sssec:#1}}%{\tt [sssec:#1]}}
+%
+%Referencias para los anteriores títulos
+\newcommand{\CHAP}[1]{Capítulo~\ref{chap:#1}}%$^{\text{\tt [c:#1]}}$}
+\newcommand{\SEC}[1]{Sección~\ref{sec:#1}}%$^{\text{\tt [s:#1]}}$}
+\newcommand{\SSEC}[1]{Subsección~\ref{ssec:#1}}%$^{\text{\tt [ss:#1]}}$}
+\newcommand{\SSSEC}[1]{Apartado~\ref{sssec:#1}}%$^{\text{\tt [sss:#1]}}$}
+\newcommand{\APEN}[1]{Apéndice~\ref{apen:#1}}%$^{\text{\tt [c:#1]}}$}
+%
+%%
+%\newcommand{\PAGEEQ}[1]{~\pageref{eq:#1}}
+%\newcommand{\PAGETAB}[1]{~\pageref{tab:#1}}
+%\newcommand{\PAGEFIG}[1]{~\pageref{fig:#1}}
+
+
+%%%%Definiendo caligrafías especiales 
+%\newcommand{\emphb}[1]{\emph{\textbf{#1}}}
+%\newcommand{\X}{\calg{X}} %{\ensuremath{\calg{X}}} %\textrm{\ifmmode {1pt} \else {\, } \fi}
+%\newcommand{\Y}{\calg{Y}}%{\ensuremath{\calg{Y}}}
+\newcommand{\calg}[1]{\ensuremath{\mathcal{#1}}} %JJMF: No entiendo para qué es esto.
+%\newcommand{\hb}[1]{\ensuremath{\textrm{\usefont{T1}{phv}{b}{n}#1}}}
+%\newcommand{\hn}[1]{\ensuremath{\textrm{\usefont{T1}{phv}{m}{n}#1}}}
+
+%
+%:Renombrando overline
+%\newcommand{\overl}[1]{\bar{#1}}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+%%%% vectores
+%
+\newcommand{\vect}[1]{\mathbf{#1}}     %vectors (bold type)
+\newcommand{\vc}[1]{\mathbf{#1}}     %vectors (bold type)
+\newcommand{\matr}[1]{\mathbf{#1}}     %matrices (bold type)
+% ó:
+%\newcommand{\vc}[1]{\ensuremath{\mathbf{#1}}}
+% ó:
+%\newcommand{\vct}[1]{\boldsymbol{#1}}
+%\newcommand{\vect}[1]{\boldsymbol{#1}}  %vectors (bold type)
+%\newcommand{\matr}[1]{\boldsymbol{#1}}  %matrices (bold type)
+
+\renewcommand*{\j}{\ensuremath{\textrm{j}}}%{\mathop{}\mathrm{j}}
+
+%%%% Complejos y exponenciales
+\newcommand{\xp}[1]{\e^{\j{#1}}}         %simple exponential
+\newcommand{\xppi}[1]{\e^{\j2\pi{#1}}}         %simple exponential
+\newcommand{\nxp}[1]{\e^{-\j{#1}}}       %negative exponential
+\newcommand{\nxppi}[1]{\e^{-\j2\pi{#1}}}       %negative exponential
+\newcommand{\e}{\mathrm{e}}
+%\newcommand{\xp}[1]{\e^{j{#1}}}         %simple exponential
+%\newcommand{\nxp}[1]{\e^{-j{#1}}}       %negative exponential
+%
+%
+% Parte real
+\newcommand{\re}{\mbox{$\mathrm{I\!Re}$}}       %real part
+%\renewcommand{\Re}{\ensuremath{\boldsymbol{\mathcal{R}}}}
+%\renewcommand{\Re}{\ensuremath{\textrm{\usefont{T1}{phv}{m}{n}Re}}}
+% Parte imaginaria
+\newcommand{\im}{\mbox{$\mathrm{I\!Im}$}}       %imaginary part
+%\renewcommand{\Im}{\ensuremath{\boldsymbol{\mathcal{I}}}}
+%\renewcommand{\Im}{\ensuremath{\textrm{\usefont{T1}{phv}{m}{n}Im}}}
+%:Creando la unidad imaginaria
+%\renewcommand{\j}{\ensuremath{\textrm{\usefont{T1}{lmr}{m}{n}j}}}
+
+
+%%%% Maths functions and symbols
+%
+%:Para definir funciones matemáticas en castellano
+\makeatletter
+\ifdtsc@English
+	\DeclareMathOperator{\sen}{sin}
+	\DeclareMathOperator{\tg}{tg}  %tg() function
+	\DeclareMathOperator{\arctg}{arctg}     %arctg() function
+\fi
+\makeatother
+
+\DeclareMathOperator{\sa}{Sa}
+%
+\DeclareMathOperator{\sgn}{sgn}
+%\newcommand{\sgn}{\mathrm{sign}}        %sign() function
+%\newcommand{\sign}{\mathrm{sign}}
+%
+\DeclareMathOperator{\rect}{rect}
+\DeclareMathOperator{\sinc}{Sinc}
+%\newcommand{\cost}{\psi}                %cost or contrast function
+\newcommand{\pder}[2]{\frac{\partial #1}{\partial #2}}  %partial derivative
+%
+%
+%\renewcommand{\mod}{\bmod}      %\:\text{mod}\:}
+\newcommand{\RR}{\mathbb{R}}            %real numbers
+\newcommand{\CC}{\mathbb{C}}    %complex numbers
+%
+%\newcommand{\tg}{\mahtrm{tg}}           
+%\newcommand{\angl}{\arg}
+%
+\newcommand{\costo}[2]{\cos^{#1}\!#2}   %cos to power
+\newcommand{\sento}[2]{\sin^{#1}\!#2}   %sen to power
+%
+\newcommand{\gra}{\ensuremath{^\circ}}  %Grados. Ejemplo: $5\gra$ K serían 5º K
+
+
+%%%% Matrices, traspuesta, hermítica, ...
+%
+\newcommand{\inv}{^{-1}}                %inverse operator
+\newcommand{\trs}{^\top}                %transposition operator
+%\newcommand{\trs}{^{\textrm{\usefont{T1}{phv}{b}{n}{T}}}}          %transponer una matriz
+\newcommand{\psd}{^\dagger}             %pseudoinverse operator
+\newcommand{\cnj}{^*}                   %complex conjugate
+\newcommand{\pcnj}{^{\phantom{*}}}      %phantom complex conjugate (for alignment)
+\newcommand{\her}{^\mathrm{H}}          %complex conjugate transpose
+%\newcommand{\her}{^{\textrm{\usefont{T1}{phv}{b}{n}{H}}}}          %Hermítica
+\newcommand{\id}[1]{\vect{I}_{#1}}       %identity matrix
+%\newcommand{\id}{\matr{I}}       %identity matrix
+\newcommand{\diag}[1]{\mathrm{diag}\left(#1\right)}     %diagonal
+%\DeclareMathOperator{\diag}{diag}
+
+
+
+%%%% indices de prestaciones %%%%%%%%%
+%
+%\newcommand{\isr}{\mathrm{ISR}}           %interference-to-signal ratio
+\newcommand{\snr}{\mathrm{SNR}}           %signal-to-noise ratio
+\newcommand{\mse}{\mathrm{MSE}}           %minimum mean square error
+%
+%ó se pueden escribir como
+%\newcommand{\SNR}{\ensuremath{\textrm{SNR}}}
+%...
+
+
+%%%%Miscellaneos
+%
+%Redefiniendo epsilon
+%\renewcommand{\epsilon}{\ensuremath{\textrm{\usefont{OML}{cmr}{m}{n}\symbol{15}}}}
+%
+%:Creando ``tal que'' de las expresiones matemáticas
+\newcommand{\talq}{\colon}
+%
+%%Creando ``igual por definición'' de las expresiones matemáticas
+\newcommand{\eqdef}{\ensuremath{\mathrel{\stackrel{\mathrm{def}}{=}}}}
+%%ó
+%\newcommand{\eqdef}{\triangleq}         %equal by definition
+%
+%
+%:Creando la igualdad basada en una ecuación
+%\newcommand{\igualref}[1]{\ensuremath{\mathrel{\stackrel{\mathrm{\eqref {#1}}}{=}}}}
+%
+%:Definiendo cardinal y norma
+\newcommand{\norm}[1]{\ensuremath{\left\lVert #1 \right\rVert }}
+\newcommand{\card}[1]{\ensuremath{\left| #1\right|}}
+%\newcommand{\card}[1]{\ensuremath{\text{card}~#1}
+%
+%:Renombrando \boldsymbol
+%\newcommand{\bm}[1]{\boldsymbol{#1}}
+%
+%:Facilitando la escritura de X_{i}
+\newcommand{\xyz}[3]{\ensuremath{#1_{#2},#2=1,2,\ldots,#3}}
+%
+%:Creando el diferencial. Por defecto, dx
+%\newcommand*{\df}[1][x]{\mathop{}\!\mathrm{d}{#1}}
+\newcommand{\df}[1]{\mathrm{d}{#1}}
+
+%
+%%Modificando el menor igual y el mayor igual
+\renewcommand{\le}{\leqslant}           %fancy \le
+\renewcommand{\ge}{\geqslant}           %fancy \ge
+%
+%:Creando BL=backslash de las expresiones matemáticas
+\newcommand{\BL}{\ensuremath{\backslash}}
+%
+%Redefiniendo iff
+\renewcommand{\iff}{\Leftrightarrow}
+%
+%\newcommand{\what}{\widehat}
+%\newcommand{\supp}[1]{^{(#1)}}          %superindex with parentheses
+\newcommand{\eqexpl}[1]{\underset{#1}{\underset{\uparrow}{=}}}  %equal with explanation
+%\newcommand{\proof}{\noindent {\bf Proof.} }
+%\newcommand{\skproof}{\noindent {\bf Sketch of the proof.} }
+\newcommand{\sfrac}[2]{\tfrac{#1}{#2}}  %small frac
+\newcommand{\inc}{\Delta}
+\newcommand{\ten}[1]{\cdot 10^{#1}}     %scientific notation
+%\newcommand{\arrow}{$\rightarrow$ }
+%\newcommand{\darrow}{$\Rightarrow$ }
+%\newcommand{\tends}{\rightarrow}                         %'tends to'
+\newcommand{\tendsub}[1]{\xrightarrow[#1]{}}             %{\underset{#1}{\longrightarrow}} %'tends to' with subscript
+%\newcommand{\tendsubsup}[2]{\xrightarrow[#1]{#2}}        %{\overset{#2}{\tendsub{#1}}}   %'tends to' with sub and superscript
+\newcommand{\ord}{\mathrm{O}}         %order of magnitude
+\newcommand{\tm}{^{\text{\tiny{TM}}}} %trademark
+%
+%
+%:Creando ``L'' de las expresiones matemáticas
+%\renewcommand{\L}[1][L\!]{\ensuremath{\boldsymbol{\mathcal{#1}}}}
+%\renewcommand{\L}[1][L\!]{\ensuremath{\boldsymbol{\mathscr{#1}}}}
+%
+%:Creando la F de transformada de Fourier
+%\newcommand{\Fo}{\ensuremath{\boldsymbol{\mathscr{F}}}}
+%
+%:Creando la H de transformada de Hilbert
+%\newcommand{\Hi}{\ensuremath{\boldsymbol{\mathscr{H}}}}
+%
+%
+%%%% Indention
+%
+%\newcommand{\ind}{$\phantom{\indent}$}
+%
+
+
+%%%% Basic statistics
+%
+%%Creando el operador "valor esperado" 
+%\newcommand{\E}{\ensuremath{\mathbb{E}}}
+%\newcommand{\E}{\ensuremath{\textrm{\usefont{OML}{phv}{b}{n}E\hspace{1pt}}}}
+%\newcommand{\E}{\ensuremath{\textrm{\usefont{T1}{phv}{m}{n}E}}}
+\newcommand{\E}{\mathbb{E}}             %expected value
+%
+%%Definiendo el espacio de probabilidad
+%\newcommand{\ep}{\ensuremath{\left( {\Omega, \calg{B}, \Pr} \right)}}
+%\newcommand{\EP}{\ensuremath{\left( {\Omega, \calg{B}, \Pr} \right)}}
+%
+%\newcommand{\var}{\mathrm{Var}}         %variance
+%\newcommand{\cov}{\mathrm{Cov}}         %covariance
+\newcommand{\covm}[1]{\vc{C}_{#1}}           %covariance matrix
+\newcommand{\corrm}[1]{\vc{R}_{#1}}           %correlation matrix
+%\newcommand{\pdf}{p}                    %probability density function
+%
+%%Creando el operador "Probabilidad"
+%\renewcommand{\Pr}{\ensuremath{\mathbb{P}}}
+%\renewcommand{\Pr}{\ensuremath{\textrm{\usefont{T1}{phv}{m}{n}P}}}
+%
+%%Momentos
+%\newcommand{\m}[1]{\mu_{#1}}            %moments
+%\newcommand{\K}[1]{\kappa_{#1}}         %cumulants (symbol)
+%\newcommand{\eK}[1]{\hat{\kappa}_{#1}}  %estimated cumulant
+%\newcommand{\cum}{\mathrm{Cum}}         %cumulant
+%\newcommand{\M}{\mathrm{M}}             %moment
+%\newcommand{\C}{\mathrm{C}}             %cumulant (short)
+%
+%Creando la varianza
+\newcommand{\si}[1]{\ensuremath{\sigma_{#1}^{2}}}
+%
+%Creando la expresión para indicar una gaussiana
+\newcommand{\gauss}[2]{\ensuremath{\calg{N}\left( {#1, #2} \right)}}
+%
+
+
+%%Creando el espectro del ruido blanco
+%\newcommand{\Sw}[1][W]{\ensuremath{S_{#1}\left( {\omega} \right)  = \frac{N_{0}}{2}}}
+%\newcommand{\Sf}[1][W]{\ensuremath{S_{#1}\left( {\omega} \right)  = \frac{N_{0}}{2}}}
+%\newcommand{\Swu}[1][W]{\ensuremath{S_{#1}\left( {\omega} \right)  = N_{0}/2} \textrm{w/(rad/s)}\finjps}
+%\newcommand{\Sfu}[1][W]{\ensuremath{S_{#1}\left( {\omega} \right)  = N_{0}/2} \textrm{w/(Hz)}\finjps}
+%
+%%Creando el límite en el sentido de error cuadrático medio. Está copiado de amsopn.sty
+%\def\lms{\qopname\relax m{l.i.m.}}
+%
+%%Creando el conjunto típico
+%\newcommand{\ct}[1][T]{\ensuremath{#1_{\epsilon}^{n}}\ifmmode \else \ \fi}%[A]{\ensuremath{#1_{\epsilon}^{\left( {n} \right)}}}
+%
+%%Creando la función de distribución. Por defecto, F_{X}\left( {x} \right)
+%\newcommand{\FD}[1][x]{\ensuremath{F_{\MakeUppercase{#1}}\left( \MakeLowercase{#1} \right)\ }}
+%\newcommand{\FDP}{función de distribución\ }
+%
+%%Creando la función de densidad de probabilidad. Por defecto, f_{X}\left( {x} \right)
+%\newcommand{\fd}[1][x]{\ensuremath{f_{\MakeUppercase{#1}}\left( \MakeLowercase{#1} \right)\ }}
+%\newcommand{\fdp}{función densidad de probabilidad\ }
+
+
+
+%%%% Revisiones
+%
+%\newcommand{\comentario}[1]{{\bf Comentario:} {\tt #1}?} 
+
+%\newcommand{\cambiopor}[3]{\marginpar{\hfill{$\tendsubsup{#2}{\text{\tt #1}}$}} {\tt >>> #3}}
+%
+%\newcommand{\cambio}[2]{{{\tt #1}} {\tt >>> #2??}}
+%
+%\newcommand{\incluir}[1]{{\bf Incluir:} {\tt #1}?}
+%\newcommand{\incluido}[1]{{\bf Incluido:} {\tt #1}}
+%
+%\newcommand{\notaFul}[1]{{\color{blue} {Fulano: \bf #1}}}
+
+
+
+%%%%Ejemplo de notación típica
+%
+%\def\w{{\mathbf w}}        %GP Vector
+%\def\r{{\mathbf r}}        %
+%\newcommand{\PHI}{\boldsymbol{\Phi}}
+%\def\b{{b}} %elemento de b
+%\def\bve{{\mathbf \bve}}
+%\def\d{{d}}
+%\def\k{{ k}}
+%\def\kk{{\mathbf \k}}
+%\def\K{{\mathbf K}}
+%\def\x{{\vect{x}}}
+%\def\y{\vect{\b}}
+%\def\newp{_{*}}        %GP Vector
+%\def\newout{\b_{*}}
+%\newcommand{\p}{\boldsymbol{\phi}}
+%\def\X{{\mathbf X}}
+%\def\teta{{\mathbf \theta}}
+%\def\muw{{\mathbf \mu_\w}}
+%\def\newin{{\vect{x}\subind{*}}}
+%\def\fv{f}
+%\def\fp{\vect{f}}
+%
+%\def\tset{\mathcal{D}}
+%\def\mgp{\boldsymbol{\mu}}
+%\def\Nor{\mathcal{N}}                %Gaussian distribution
+%\def\treg{y} %Target value of a regression problem
+%\def\tregnew{y_{*}}
+%
+%\ifluatex
+%\makeatletter
+%\DeclareRobustCommand{\LaTeX}{L\kern-.36em%
+%        {\sbox\z@ T%
+%         \vbox to\ht\z@{\hbox{\check@mathfonts
+%                              \fontsize\sf@size\z@
+%                              \math@fontsfalse\selectfont
+%                              A}%
+%                        \vss}%
+%        }%
+%        \kern-.15em%
+%        \TeX \xspace}
+%\makeatother
+%\else
+%%	\renewcommand{\LaTeX}{LaTeX\xspace}
+%%	\renewcommand{\TeX}{TeX\xspace}
+%\fi
+%
+
+%%:Una posible propuesta de logos
+\usepackage{hologo}[2016/05/16]
+\protected\def\latex{%
+  L%
+  \mbox{\kern-.35em\raisebox{0.348ex}{\scalebox{0.75}{A}}\kern-.15em \TeX}\hspace{-0.15em}}
+  
+\protected\def\lualatex{%
+  L%
+  \mbox{\kern-.38em\raisebox{0.348ex}{\scalebox{0.75}{U\kern-.16em A}}\kern-.09em \latex}}
+
+\protected\def\pdflatex{%
+  P%
+  \mbox{\kern-.15em\raisebox{0ex}{\scalebox{0.75}{d\kern-.1em f}}\kern-.05em \latex}}
+
+\protected\def\LuaLaTeX{%
+  L%
+  \mbox{\kern-.38em\raisebox{0.348ex}{\scalebox{0.75}{U\kern-.16em A}}\kern-.09em \latex}}
+
+\protected\def\PdfLaTeX{%
+  P%
+  \mbox{\kern-.15em\raisebox{0ex}{\scalebox{0.75}{d\kern-.1em f}}\kern-.05em \latex}}
+
+\protect\def\XeLaTeX{%
+\hologo{Xe}%
+   L%
+  \mbox{\kern-.35em\raisebox{0.348ex}{\scalebox{0.75}{A}}\kern-.15em \TeX}\hspace{-0.15em}}
+
+\protect\def\xelatex{%
+\hologo{Xe}%
+   L%
+  \mbox{\kern-.35em\raisebox{0.348ex}{\scalebox{0.75}{A}}\kern-.15em \TeX}\hspace{-0.15em}}
+
+
+
+

@@ -1,0 +1,1471 @@
+%Paquete de estilos. Puede utilizarse con Latex y LuaLatex, pero siempre codificando los ficheros de entrada en UTF-8.
+
+%:BLOQUE 00 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{libroETSI}[2017/04/17 Manejando los estilos de la ETSI]
+
+%:Necesario únicamente para LuaLaTeX pero no hace daño para LaTeX. Es un parche a la espera que muchos paquetes se adapten a la nueva versión de LuaLaTeX. DEBE ESTAR AL PRINCIPIO DE TODO.
+\usepackage{luatex85}
+
+%:Para establecer opciones del paquete
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{%
+   family=dtsc,
+   prefix=dtsc@,			% Prefijo de todos los comandos creados por el paquete dtsc-8 
+   }
+\DeclareBoolOption{Myfinal}
+\DeclareBoolOption{Minion}
+\DeclareBoolOption{English}
+\DeclareBoolOption{MyCap}
+
+\ProcessKeyvalOptions*			% Procesa las opciones
+
+%:BLOQUE 01 Un conjunto de paquetes de propósitos generales
+%:Para hacer uso de muchas de las nuevas posibilidades de e-tex
+\usepackage{etoolbox}
+
+%:Para fijar algunas incompatibilidades de paquetes previos
+\usepackage{fixltx2e}
+
+%:Un problema interno de Tex equivalente al allocated de C para asignar espacio de memoria. En esta dirección está explicado: http://tex.stackexchange.com/questions/38607/no-room-for-a-new-dimen
+\usepackage{etex}
+\reserveinserts{28}
+
+%:Si estamos utilizando las clases KOMA
+\@ifundefined{KOMAClassName}
+{
+	\usepackage{scrextend}
+}
+{
+	\usepackage{scrhack}
+	\def\tt{\texttt}
+}
+\deffootnote{0.75em}{1em}{\makebox[0.75em][l]{\textsuperscript{\thefootnotemark}}}
+
+%:Para compilar con LuaLatex o no
+\usepackage{ifluatex}
+
+%:Para poder utilizar la opción draft como un if
+\usepackage{ifdraft}
+
+%:Para que algunos comandos funcionen
+\usepackage{ifthen}
+
+%:Para determinar si puede haber capítulos en el documento
+\makeatletter
+\@ifclassloaded{book}{\dtsc@MyCaptrue}
+	{
+	\@ifclassloaded{report}{\dtsc@MyCaptrue}
+		{
+		\@ifclassloaded{scrreprt}{\dtsc@MyCaptrue}
+			{
+			\@ifclassloaded{scrbook}{\dtsc@MyCaptrue}{\dtsc@MyCapfalse}
+			}
+		}
+	}
+\makeatother
+
+%:Para mejorar la apariencia
+\makeatletter
+\ifdtsc@Myfinal
+	\usepackage[protrusion=true,expansion=true]{microtype}
+	\pdfprotrudechars=2
+	\pdfadjustspacing=2
+\fi
+\makeatother
+
+%:Para mostrar dónde están los términos que se incluyen en el índice. Tiene que estar al principio
+%\makeatletter
+%\ifdtsc@Myfinal
+%\else
+%	\usepackage{showidx}
+%\fi
+%\makeatother
+
+%:Para que latex sea menos restrictivo a la hora de colocar las figuras
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{4}
+\renewcommand{\topfraction}{.97}
+\renewcommand{\bottomfraction}{.97}
+\renewcommand{\textfraction}{.03}
+\renewcommand{\floatpagefraction}{.9}
+\renewcommand{\dbltopfraction}{.97}
+\renewcommand{\dblfloatpagefraction}{.9}
+\setlength{\floatsep}{12pt plus 6pt minus 4pt}
+\setlength{\textfloatsep}{15pt plus 8pt minus 5pt}
+\setlength{\intextsep}{12pt plus 6pt minus 4pt}
+\setlength{\dblfloatsep}{12pt plus 6pt minus 4pt}
+\setlength{\dbltextfloatsep}{15pt plus 8pt minus 5pt}
+
+%:Para permitir una posible ruptura de fórmulas aligneadas
+\interdisplaylinepenalty=2500
+
+%:Para penalizar líneas huérfanas y viudas
+\clubpenalty=9996
+\widowpenalty=9999
+\brokenpenalty=4991
+\predisplaypenalty=10000
+\postdisplaypenalty=1549
+\displaywidowpenalty=1602
+
+%:Para evitar blanco excesivo por arriba y abajo de las secciones
+\newskip\mfilskip
+\mfilskip=0pt plus 1cm\relax
+\newcommand{\mfilbreak}{\vspace{\mfilskip}\penalty -200%
+  \ifdim\lastskip<\mfilskip\vspace{-\lastskip}\else\vspace{-\mfilskip}\fi}
+\pretocmd{\section}{\mfilbreak}{}{}
+
+%:Para gestionar la dimensión de las páginas
+\usepackage{geometry}
+
+%:Salvamos el tamaño de la fuente normal para utilizar dimensiones relativas
+\newdimen\lnormal
+\newdimen\lbnormal
+
+\makeatletter
+	\lnormal=\f@size pt
+	\lbnormal=\f@baselineskip
+\makeatother
+
+%:BLOQUE 2 Idioma, Fuentes y codificación
+%:Paquete relacionado con el idioma
+\makeatletter
+\ifdtsc@English
+	%:Inglés como idioma principal
+	\usepackage[spanish, main=english]{babel}
+	\selectlanguage{english}
+\else
+	%:Castellano como idioma principal
+	\usepackage[english, spanish, es-ucroman, es-noshorthands, es-nosectiondot, es-noindentfirst, es-nolists, activeacute]{babel} 
+	\spanishdecimal{.}
+	\selectlanguage{spanish} 
+\fi
+\makeatother
+
+%:Un conjunto de macros relacionados con el lenguaje 
+\makeatletter
+\ifdtsc@English
+	\def\Prefacename{Preface} 
+	\def\glossaryname{Glossary}%
+	\newcommand{\theoremname}{Theorem}
+	\newcommand{\lemmaname}{Lemma}
+	\newcommand{\propertyname}{Property}
+	\newcommand{\corollaryname}{Corollary}
+	\newcommand{\definitionname}{Definition}
+	\newcommand{\solutionname}{Solution}
+	\newcommand{\listprogram}{Programs}
+	\newcommand{\programname}{Code}
+	\newcommand{\summaryname}{Summary}
+	\newcommand{\examplename}{Example}
+	\def\lstlistingname{Code}
+	\def\lstlistlistingname{Code}	
+	\def\lstlistlistingname{List of Codes}
+	\def\shortcontentsname{Short Contents}%
+	\def\notationname{Notation}%
+\else
+	\addto\captionsspanish
+	{%
+	\def\figurename{Figura}%
+	\def\tablename{Tabla}%
+	\def\listfigurename{{\'I}ndice de Figuras}
+	\def\listtablename{{\'I}ndice de Tablas}
+	\def\lstlistlistingname{{\'I}ndice de C{\'o}digos}
+	\def\glossaryname{Glosario}%
+	\def\contentsname{{\'I}ndice}%
+	}
+	\def\glossaryname{Glosario}
+	\def\chaptername{Cap{\'i}tulo}
+	\def\Prefacename{Prefacio}%
+	\def\refname{Referencias}%
+	\def\abstractname{Resumen}%
+	\def\bibname{Bibliograf{\'i}a}
+	\def\appendixname{Ap\'endice}
+	\def\indexname{{\'I}ndice Alfab\'etico}
+	\def\listprogram{C{\'o}digos}
+	\def\lstlistingname{C{\'o}digos}
+	\def\programname{C{\'o}digo}
+	\def\theoremname{Teorema}
+	\def\lemmaname{Lema}
+	\def\propertyname{Propiedad}
+	\def\corollaryname{Corolario}
+	\def\definitionname{Definici{\'o}n}
+	\def\proofname{Demostraci{\'o}n}
+	\def\examplename{Ejemplo}
+	\def\solutionname{Soluci{\'o}n}
+	\def\summaryname{Resumen}
+	\def\shortcontentsname{{\'I}ndice Abreviado}%
+	\def\notationname{Notaci{\'o}n}%
+\fi
+\makeatother
+
+%:Para la gestión de la codificación
+\ifluatex
+\else
+	\usepackage[utf8]{inputenc}	 
+	\usepackage[T1]{fontenc}
+\fi
+
+%:Gestión de fuentes matemáticas
+\ifluatex
+	\usepackage[no-math]{fontspec}
+	\usepackage{lualatex-math}
+    	\usepackage{luatextra}
+\fi
+
+%:Para mejorar el escalado de algunos símbolos matemáticos. Tiene que cargarse antes del paquete amsmath
+\usepackage{exscale}
+
+%:Paquetes matemáticos
+\usepackage[cmex10]{amsmath}
+\usepackage{mathtools}
+
+%:Por si queremos (podemos) o no utilizar el paquete Minion como fuente matemática y los símbolos asociados
+\makeatletter
+\ifdtsc@Minion
+	\usepackage{MnSymbol}
+	\usepackage[fullfamily,opticals,lf, minionint, mnsy]{MinionPro}
+	\newcommand{\bm}{\ensuremath{\boldsymbol}}
+\else
+	\usepackage{amssymb}
+	\usepackage{mathptmx}
+	\usepackage{amsfonts}
+	\usepackage{bm}
+\fi
+\makeatother
+
+%:Para utilizar una fuente caligráfica rebuscada, con el comando \mathscr{}
+\usepackage{mathrsfs}
+
+%:Para utilizar algunos símbolos extendidos parecidos a el conjunto de los reales, etc.
+\usepackage{dsfont}
+
+%:Para permitir más de 16 alfabetos matemáticos en LuaLatex
+\ifluatex
+	\makeatletter
+		\def\new@mathgroup{\alloc@8\mathgroup\mathchardef\@cclvi}
+		\patchcmd{\document@select@group}{\sixt@@n}{\@cclvi}{}{}
+		\patchcmd{\select@group}{\sixt@@n}{\@cclvi}{}{}
+	\makeatother
+\fi
+
+%:Problemas con lualatex y símbolos largos, como raíz cuadrada
+\ifluatex
+	\DeclareSymbolFont{raizlua}{OMX}{yhex}{m}{n}
+	\DeclareMathRadical{\sqrtlua}{raizlua}{"70}{raizlua}{"70}
+\else
+	\newcommand{\sqrtlua}{\sqrt}
+\fi
+
+%:Este paquete permite modificar el tamaño de la fuente a utilizar. Se recupera el tamaño con \normalsize. Por ejemplo,  \fontsize{100}{120}\helveticam, suponiendo que el comando \helveticam está definido adecuadamente (ver más adelante)  y el texto se escribirá en el formato indicado por \helveticam, con el tamaño que se indique, 100 y el interlineado del segundo parámetro, 120. 
+\usepackage{fix-cm}
+
+%:Empieza todo lo relacionado con FUENTES
+%:Definición de las fuentes sin serif
+\ifluatex
+	
+	\setsansfont[Ligatures=TeX,		% Se puede obtener un texto sin serif con \ssfamily				
+	Scale=0.95,
+	]{Arial Narrow}
+			
+	% Declaración de nuevas familias de fuentes. Casi equivale a definir comandos
+	\newfontfamily\helveticam{Arial}						% Helvética
+	\newfontfamily\helveticab{Arial Bold}					% Helvética Bold
+	\newfontfamily\helveticai{Arial Italic}					% Helvética itálica
+	\newfontfamily\helveticax{Arial Bold Italic}			% Helvética Bold Itálica
+
+	% Estas declaraciones facilitan la utilización de las fuentes correspondientes
+	\newfontfamily\titular{ArialNarrow-Bold}				% Para los titulares
+	\newfontfamily\titulart{ArialNarrow-Bold}				% Para los titulos
+	\newfontfamily\titulari{ArialNarrow-BoldItalic}			% Para los titulares oblicua
+
+	\newfontfamily\titulartoc{ArialNarrow}					% Para el TOC
+	\newfontfamily\titulartocb{ArialNarrow-Bold}			% Para el TOC bold
+	\newfontfamily\titulartoci{ArialNarrow-BoldItalic}		% Para el TOC oblicua
+		
+	
+	% Para poner algunas marcas
+	\newfontfamily\marcaregistrada{ArialNarrow}
+	
+%:Fin de la definición de fuentes para LuaLatex
+
+\else
+
+%: --------------------------              Definición de las fuentes para Latex
+
+	\renewcommand{\sfdefault}{phv} 
+	
+	\newcommand{\helveticam}{\usefont{T1}{phv}{m}{n}\selectfont }
+	\newcommand{\helveticab}{\usefont{T1}{phv}{b}{n}\selectfont }
+	\newcommand{\helveticai}{\usefont{T1}{phv}{m}{it}\selectfont }
+	\newcommand{\helveticax}{\usefont{T1}{phv}{b}{it}\selectfont }
+
+	\newcommand{\titular}{\usefont{T1}{phv}{bc}{n}\selectfont }
+	\newcommand{\titulari}{\usefont{T1}{phv}{bc}{it}\selectfont }
+	\newcommand{\titulart}{\usefont{T1}{phv}{bc}{n}\selectfont }
+	
+	\newcommand{\titulartoc}{\usefont{T1}{phv}{mc}{n}\selectfont }
+	\newcommand{\titulartocb}{\usefont{T1}{phv}{bc}{n}\selectfont }
+	\newcommand{\titulartoci}{\usefont{T1}{phv}{mc}{it}\selectfont }
+	
+	% Para poner algunas marcas
+	\newcommand{\marcaregistrada}{\usefont{T1}{phv}{mc}{n}\selectfont }
+
+%: Fin de la definición de las fuentes para Látex	
+\fi
+
+% Declaremos las dimensiones. Las dimensiones corresponden a los valores 5, 9, 11, 13, 14, 21, 24, 28. Estas son las que corresponden cuando la normal es 10 hay que definir tanto las longitudes como el salto de línea, que se denominarán igual salvo por una b después de la l
+
+\newdimen\lcinco
+\newdimen\lbcinco
+
+\newdimen\lnueve
+\newdimen\lbnueve
+
+\newdimen\lonce
+\newdimen\lbonce
+
+\newdimen\ltrece
+\newdimen\lbtrece
+
+\newdimen\lcatorce
+\newdimen\lbcatorce
+
+\newdimen\ldocho
+\newdimen\lbdocho
+
+\newdimen\lveinte
+\newdimen\lbveinte
+
+\newdimen\lvuno
+\newdimen\lbvuno
+
+\newdimen\lvcuatro
+\newdimen\lbvcuatro
+
+\newdimen\lvocho
+\newdimen\lbvocho
+
+\newdimen\ltdos
+\newdimen\lbtdos
+
+\lcinco=\dimexpr0.5\dimexpr\lnormal
+\lbcinco=\dimexpr0.5\dimexpr\lbnormal
+
+\lnueve=\dimexpr0.9\dimexpr\lnormal
+\lbnueve=\dimexpr0.9\dimexpr\lbnormal
+
+\lonce=\dimexpr1.1\dimexpr\lnormal
+\lbonce=\dimexpr1.1\dimexpr\lbnormal
+
+\ltrece=\dimexpr1.3\dimexpr\lnormal
+\lbtrece=\dimexpr1.3\dimexpr\lbnormal
+
+\lcatorce=\dimexpr1.4\dimexpr\lnormal
+\lbcatorce=\dimexpr1.4\dimexpr\lbnormal
+
+\ldocho=\dimexpr1.8\dimexpr\lnormal
+\lbdocho=\dimexpr1.8\dimexpr\lbnormal
+
+\lveinte=\dimexpr2.0\dimexpr\lnormal
+\lbveinte=\dimexpr2.0\dimexpr\lbnormal
+
+\lvuno=\dimexpr2.1\dimexpr\lnormal
+\lbvuno=\dimexpr2.1\dimexpr\lbnormal
+
+\lvcuatro=\dimexpr2.4\dimexpr\lnormal
+\lbvcuatro=\dimexpr2.4\dimexpr\lbnormal
+
+\lvocho=\dimexpr2.8\dimexpr\lnormal
+\lbvocho=\dimexpr2.8\dimexpr\lbnormal
+	
+\ltdos=\dimexpr3.2\dimexpr\lnormal
+\lbtdos=\dimexpr3.2\dimexpr\lbnormal
+
+
+%:Comandos para las diferentes partes del texto
+\newcommand{\achaptext}{\fontsize{\lvcuatro}{\lbvcuatro} \titular}			% Para el texto de los capítulos
+\newcommand{\achapnum}{\fontsize{\lvcuatro}{\lbvcuatro} \titular}			% Para el número de los capítulos  
+\newcommand{\parttitlesans}{\fontsize{\lvocho}{\lbvocho} \titular }			% Para las partes
+
+\newcommand{\aheadsecc}{\fontsize{\ltrece}{\lbtrece} \titular}					%Para las secciones
+\newcommand{\aheadsubsecc}{\fontsize{\lnormal}{\lbnormal} \titular}			%Para las subsecciones y demás
+\newcommand{\aheadteoremas}{\fontsize{\lnormal}{\lbnormal}\titular}			%Teoremas
+\newcommand{\aheadpruebas}{\fontsize{\lnormal}{\lbnormal}\titulari}			% Demostraciones
+
+\newcommand{\rhfont}{\fontsize{\lnormal}{\lbnormal}\titular}					%Cabeceras de páginas
+\newcommand{\rhpagefont}{\fontsize{\lnueve}{\lbnueve}\titular}				%Números de páginas
+
+\newcommand{\tocpart}{\fontsize{\ldoce}{\lbdoce}\titulartocb}					% Para el TOC
+\newcommand{\tocchap}{\fontsize{\lonce}{\lbonce}\titulartocb}				% Para el TOC
+\newcommand{\tocschap}{\fontsize{\lonce}{\lbonce}\titulartocb}
+\newcommand{\tocsecc}{\fontsize{\lnormal}{\lbnormal}\titulartoc}
+\newcommand{\tocsubsecc}{\fontsize{\lnormal}{\lbnormal}\titulartoc}
+
+\newcommand{\titulofont}{\fontsize{\lvcuatro}{\lbvcuatro}\titulart}			%Título
+\newcommand{\subtitulofont}{\fontsize{\lveinte}{\lbveinte}\titulart}			%Subtítulo
+\newcommand{\halftitlefont}{\fontsize{\lcatorce}{\lbcatorce}\titulart}			%Título intermedio
+\newcommand{\autorfont}{\fontsize{\lcatorce}{\lbcatorce}\titulart}				%Autor
+\newcommand{\afiliafont}{\fontsize{\lnueve}{\lbnueve}\sffamily}				%Afiliación
+\newcommand{\editionfont}{\fontsize{\lcatorce}{\lbcatorce}\titulart}			%Editorial
+\newcommand{\locfont}{\fontsize{\lcinco}{\lbcinco}\helveticam}				%Lugar
+\newcommand{\reffont}{\normalfont }										% Para las referencias
+
+\usepackage{textcomp}
+\normalfont
+
+%:Se acaba todo lo relacionado con  las FUENTES
+
+%:BLOQUE 3 TOC y listas diversas. Tiene que estar antes de hyperref para evitar problemas
+
+%:Definiciones genéricas del TOC
+\setcounter{tocdepth}{3}						% El nivel hasta el que se muestra el índice, comienza en 0
+\makeatletter
+\renewcommand{\@tocrmarg}{4em}			% Para despegar el final de la línea del número
+\makeatother
+
+% FJPS 17/04/2017 Modificaciones para incorporar partes en el toc, con un tratamiento específico
+%:Para definir cómo aparecen las partes en el TOC
+\makeatletter			
+\ifdtsc@MyCap
+	\renewcommand*\l@part[2]
+		{
+		\addpenalty{-\@highpenalty}%
+		\vskip 1.5em \@plus\p@
+		\@dottedtocline{0}{0em}{1.5em}{\tocpart \partname\; #1}{\tocpart #2}
+		}
+\fi
+\makeatother		
+
+%:Para definir cómo aparecen los capítulos en el TOC
+\makeatletter
+\ifdtsc@MyCap
+	\renewcommand*\l@chapter[2]
+		{
+		\addpenalty{-\@highpenalty}%
+		\vskip 1em \@plus\p@
+		\@dottedtocline{0}{0em}{1.5em}{\tocchap #1}{\tocchap #2}
+		}
+\fi
+\makeatother
+
+%:Para definir cómo aparecen los subcapítulos en el TOC
+\makeatletter
+\ifdtsc@MyCap
+	\newcommand*\l@subchapter[2]
+		{
+		\addpenalty{-\@highpenalty}%
+		\vskip 0.5em \@plus\p@
+		\@dottedtocline{1}{1.5em}{2em}{\tocschap #1}{\tocschap #2}
+		}
+\makeatother
+
+%:Para definir cómo aparecen las secciones en el TOC
+\makeatletter
+	\renewcommand*\l@section[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.1em \@plus\p@
+	\@dottedtocline{1}{1.5em}{2.5em}{\tocsecc #1}{\tocsecc #2}
+	}
+\makeatother
+
+%:Para definir cómo aparecen los problemas de los capítulos de problemas de un libro de problemas
+\makeatletter
+	\newcommand*\l@problema[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.1em \@plus\p@
+	\@dottedtocline{1}{1em}{2.5em}{\tocsecc #1}{\tocsecc #2}
+	}
+\makeatother
+
+%:Para definir cómo aparecen las subsecciones en el TOC
+\makeatletter
+	\renewcommand*\l@subsection[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.05em \@plus\p@
+	\@dottedtocline{2}{4em}{3em}{\tocsubsecc #1}{\tocsubsecc #2}
+	}
+\makeatother
+
+%:Para definir cómo aparecen las subsubsecciones en el TOC
+\makeatletter
+	\renewcommand*\l@subsubsection[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.05em \@plus\p@
+	\@dottedtocline{3}{6.5em}{3em}{\tocsubsecc #1}{\tocsubsecc #2}
+	}
+\makeatother
+
+%:Para borrar los puntos en el TOC
+\makeatletter
+	\renewcommand{\@dotsep}{10000}
+\makeatother
+
+%:Para definir cómo aparecen las listas de elementos del frontmatter y backmatter en el TOC
+% Para evitar un warning sobre las listas
+\makeatletter
+	\providecommand*{\toclevel@listasf}{0} % Listas del frontmatter (prefacio, notación, acrónimos)
+	\providecommand*{\toclevel@listasb}{0} % Listas del backmatter(índice de figuras, tablas, etc)
+\makeatother
+
+%:Para definir el formato de estas dos listas. Observar que está copiado de cómo aparecen los capítulos en el TOC y ligeramente modificado.
+% frontmatter
+\makeatletter
+	\newcommand*\l@listasf[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.05em \@plus\p@
+	 \@dottedtocline{0}{0em}{2em}{\fontsize{\lnueve}{\lbnueve}\selectfont \helveticai #1}{\fontsize{\lnueve}{\lbnueve}\titulartoc #2}
+	}
+\makeatother
+
+% backmatter
+\makeatletter
+	\newcommand*\l@listasb[2]
+	{
+    \addpenalty{-\@highpenalty}%
+    \vskip 0.05em \@plus\p@
+	 \@dottedtocline{0}{0em}{2em}{\fontsize{\lnueve}{\lbnueve}\selectfont \helveticai #1}{\tocsecc #2}
+	}
+\makeatother
+
+%:Para cambiar la indentación de las captions de las figuras en la lista de figuras
+\makeatletter
+	\renewcommand*\l@figure[2]{\@dottedtocline{1}{.1em}{2.8em}{\tocsecc #1}{\tocsecc #2}}
+\makeatother
+
+%:Para cambiar la indentación de las captions de las tablas en la lista de tablas
+\makeatletter
+	\renewcommand*\l@table[2]{\@dottedtocline{1}{.1em}{2.8em}{\tocsecc #1}{\tocsecc #2}}
+\makeatother
+
+%:FIN del formato de las listas
+
+%:Fin de definiciones del TOC
+
+%:BLOQUE 04 Páginas, cabeceras de páginas y estilos de los elementos:capítulo, subcapítulo, sección, etc.
+%:TITLESEC 
+%:Cabeceras y estilos de páginas
+\usepackage[noindentafter, pagestyles, extramarks, explicit]{titlesec}
+  
+\newlength{\plusheadl}
+\newlength{\plusheadr}
+
+\makeatletter			
+\ifdtsc@MyCap
+	\setlength{\plusheadl}{2.5em}
+	\setlength{\plusheadr}{2.5em}
+\else
+	\setlength{\plusheadl}{0em}
+	\setlength{\plusheadr}{0em}
+\fi
+\makeatother
+\widenhead[\plusheadl][0pt]{0pt}{\plusheadr}
+
+% Cómo hay que poner los números de las páginas
+\newcommand{\numpagpar}{\makebox[\plusheadl][l]{\rhpagefont \thepage}}
+\newcommand{\numpagodd}{\makebox[\plusheadr][r]{\rhpagefont \thepage}}
+
+%:Definiendo la regla de la cabecera de las páginas normales
+\makeatletter
+	\newcommand\esirulehead{\setesirulehead{0.5\p@}}
+	\newcommand\setesirulehead[1]{%
+  	\ifdim#1=\z@
+    		\let\makeheadrule\@empty
+  	\else
+    		\def\makeheadrule{\color{gray}\rule[-.3\baselineskip]{\linewidth}{#1}}%
+  	\fi}
+\makeatother
+
+%:Estilos de páginas
+% La definición del estilo de páginas es muy simple: \newpagestyle{nombre del estilo}{\comandos generales \sethead[izquierda pág par][centro pág par][derecha pág par]{izquierda pág impar}{centro pág impar}{derecha pág impar}\setfoot[izquierda pág par][centro pág par][derecha pág par]{izquierda pág impar}{centro pág impar}{derecha pág impar}}
+
+\newpagestyle{esitscCD}
+	{
+	\esirulehead
+	\sethead[\numpagpar \rhfont\chaptername\ \thechapter. \;\chaptertitle][][]%
+			{}{}{\rhfont\thesection\ \;\sectiontitle \numpagodd}
+	}
+
+\newpagestyle{primera}
+	{
+	\esirulehead \footrule
+  	\sethead[][][]{\includegraphics[width=2 cm]{logoUS.pdf}}%
+  				{\raisebox{0.8cm}{\begin{minipage}{0.515\textwidth}
+				\centering
+				{\aheadsubsecc \fromtitulacion}\\
+				\vspace*{.5ex}
+				{\normalfont \fromasignatura}\\
+				\vspace*{1ex}
+				\normalfont \fromconvocatoria \quad \fromfecha
+				\end{minipage}}
+				}%
+				{\includegraphics[width=4 cm]{logoTSC.pdf}
+				}
+	\setfoot{}{\rhpagefont Pág. \thepage\, de\, \zpageref{LastPage}}{}
+  	}
+
+\newpagestyle{examen}
+	{
+	\esirulehead
+	\sethead[\rhpagefont Pág. \thepage\, de\, \zpageref{LastPage}][\aheadsubsecc\fromasignatura][[\rhpagefont\fromfecha]%
+	{[\rhpagefont\fromfecha}{\aheadsubsecc\fromasignatura}{\rhpagefont Pág. \thepage\, de\, \zpageref{LastPage}}
+	}
+
+\newpagestyle{apendice}
+	{
+	\esirulehead
+	\sethead[\numpagpar][][\rhfont\appendixname\ \thechapter. \;\chaptertitle]%
+			{\rhfont\thesection \;\;\sectiontitle}{}{\numpagodd}
+	}
+
+\newpagestyle{problema}
+	{
+	\esirulehead
+    	\sethead[\numpagpar][][\rhfont\chaptername \; \thechapter. \chaptertitle]% even
+        		{\rhfont\theproblema \; \problematitle}{}{\numpagodd}% odd
+    	}
+	
+\newpagestyle{Resumen}
+	{
+	\esirulehead
+	\sethead[\numpagpar \rhfont\chaptername\ \thechapter. \;\chaptertitle][][]%
+			{}{}{\rhfont \nombreresumen \numpagodd}
+	}
+
+\newpagestyle{especial}
+	{ 
+	\esirulehead
+	\sethead[\numpagpar][\rhfont\chaptertitle][] {}{\rhfont\chaptertitle}{\numpagodd}
+	}
+
+\newpagestyle{probprop}
+	{
+	\esirulehead
+  	\sethead[\numpagpar][\rhfont Problemas Propuestos\;\chaptername \ \thechapter][]%
+			{}{\rhfont Problemas Propuestos\;\chaptername \ \thechapter}{\numpagodd}
+  	}
+
+\newpagestyle{paginablanco}
+	{
+  	\sethead[][][]{}{}{}
+	    \vspace*{0.2\textheight}
+    \begin{center}
+    {\emph{Página en blanco} }
+    \end{center}
+	}
+	
+\renewpagestyle{plain}
+{
+\setfoot[][\rhpagefont\thepage][]{}{\rhpagefont\thepage}{}
+}
+          
+%:Elementos de segmentación de un texto
+%:Estilo de capítulos con numeración
+\titleformat{\chapter}{\vspace{75pt}\achapnum} {\makebox[25 pt]{\raggedright\thechapter}}{8pt}{\hspace*{-6pt}\raggedright\achaptext #1}[\vspace{0.3pc} {\color{gray!75}\titlerule[3.5pt]} \vspace{50pt}]
+\titlespacing{\chapter}{0 pt}{0 pt}{0 pt}[0 pt]
+
+%:Estilo de capítulos sin numeración
+\titleformat{name=\chapter,numberless}{\vspace{75pt}}{}{0pc}{\filleft\achaptext #1}[\vspace{0.3pc} {\color{gray!75}\titlerule[3.5pt]} \vspace{50pt}]
+\titlespacing{name=\chapter,numberless}{0 pt}{0 pt}{0 pt}[0 pt]
+
+%:Estilo de sección     
+\titleformat{\section}{\aheadsecc}{\thesection}{10 pt}{#1} 
+\titlespacing{\section}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+%:Estilo de sección sin numeración     
+\titleformat{name=\section,numberless} {\aheadsecc}{}{0 pt}{#1} 
+\titlespacing{name=\section,numberless}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+%:Estilo de sección sin numeración personal
+\titleclass{\misection}{straight}[\chapter]        
+\titleformat{name=\misection,numberless}{\aheadsecc}{}{0 pt}{#1} 
+\titlespacing{name=\misection,numberless}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+%:Estilo de subsección     
+\titleformat{name=\subsection} {\aheadsubsecc}{\thesubsection}{10 pt}{#1} 
+\titlespacing{name=\subsection}{0 pt}{2ex plus .1ex minus .2ex}{2ex plus .1ex minus .2ex}
+
+%:Estilo de subsección sin numeración     
+\titleformat{name=\subsection,numberless} {\aheadsubsecc}{}{0 pt}{#1} 
+\titlespacing{name=\subsection,numberless}{0 pt}{2ex plus .1ex minus .2ex}{2ex plus .1ex minus .2ex}
+
+%:Estilo de subsubsección     
+\titleformat{name=\subsubsection}{\aheadsubsecc}{\thesubsubsection}{10 pt}{#1} 
+\titlespacing{name=\subsubsection}{0 pt}{1.0ex plus .1ex minus .15ex}{1.0ex plus .1ex minus .15ex}
+
+%:Estilo de subsubsección sin numeración     
+\titleformat{name=\subsubsection,numberless}{\aheadsubsecc}{}{0 pt}{#1} 
+\titlespacing{name=\subsubsection,numberless}{0 pt}{1.0ex plus .1ex minus .15ex}{1.0ex plus .1ex minus .15ex}
+
+%:Estilo de problema en un libro con capítulos de problemas   
+\newcounter {problema}[chapter]
+\makeatletter
+\renewcommand {\theproblema}{P. \thechapter.\@arabic\c@problema}
+\makeatother
+\newcommand{\problemtitle}{}
+
+\titleclass{\problema}{straight}[\chapter]  
+\titleformat{name=\problema}{\aheadsecc}{\theproblema}{10 pt}{#1}[]      
+\titlespacing{name=\problema}{0 pt}{3ex plus .1ex minus .2ex}{3ex plus .1ex minus .2ex}
+
+\makeatletter
+\let\problemaint\problema
+\def\problema{\@ifnextchar[\problemaii\problemai}
+\def\problemai#1{\gdef\problematitle{#1}\problemaint{#1}}
+\def\problemaii[#1]#2{\gdef\problematitle{#1}\problemaint[#1]{#2}}
+\makeatother
+
+%:Para que el cambio del tipo de página se gestione con los comandos
+\makeatletter
+	\let\problema@without@pagestyle\problema
+	\def\problema{\pagestyle{problema}\problema@without@pagestyle}
+\makeatother
+
+\makeatletter
+	\let\section@without@pagestyle\section
+	\def\section{\pagestyle{esitscCD}\section@without@pagestyle}
+\makeatother
+
+%:BLOQUE 05 Gestión general del documento
+
+%:Para que las páginas en blanco no tengan cabecera y el capítulo comience en página impar
+\makeatletter
+      \def\cleardoublepage
+      {
+      \clearpage\if@twoside \ifodd\c@page\else
+      \vspace*{\fill}
+        \thispagestyle{empty}
+        \newpage
+        \if@twocolumn\hbox{}\newpage\fi\fi\fi
+      }
+\makeatother
+
+%:Definiendo un subcapítulo
+\newcounter{subchapter}[chapter]
+\makeatletter
+\providecommand*{\toclevel@subchapter}{0} 
+\makeatother
+
+\makeatletter
+\newcommand\subchapter[1]
+{
+	\newpage
+	%\if@openright\cleardoublepage\else\clearpage\fi
+         	\thispagestyle{plain}%
+         	\vspace*{30\p@}%
+	{
+	\parindent \z@ \raggedleft \reset@font%
+	\par\nobreak
+ 	{\achaptext{#1}}
+	\par\nobreak
+	\interlinepenalty\@M
+	\color{gray!75}\rule{\linewidth}{3.5pt}
+	\vspace*{10\p@}%
+	\vskip 70\p@
+	}
+  	\addcontentsline{toc}{subchapter}{#1}
+}
+\makeatother
+
+
+%:Para definir APÉNDICES
+\usepackage[title, titletoc]{appendix}
+
+\AtBeginEnvironment{appendices}
+{
+\titleformat{\chapter}[display] % Modifica, dentro del entorno, el formato del capítulo
+  {}
+  {\filleft{\fontsize{\ldocho}{\lbdocho}\titular \chaptertitlename} \achaptext \thechapter }
+  {0.2ex}
+  {\filleft \achaptext #1}
+  [\vspace{-10pt}%
+\color{gray!75}\rule{\linewidth}{3.5pt}\vspace{7pc}]
+\pagestyle{apendice}
+} 
+%
+
+%:Para utilizar colores
+\usepackage[svgnames, x11names]{xcolor}
+\definecolor{light-gray}{gray}{0.90}
+\definecolor{shadecolor}{gray}{0.90}
+\definecolor{refcolor}{named}{Black}
+\definecolor{Matlabcolor}{RGB}{252,251,220}
+
+%:Para definir el doble espaciado y espaciados especiales dentro de un entorno \begin{spacing}
+\usepackage{setspace}
+
+%:Para mejorar el espacio final dentro de la definición de un macro
+\usepackage{xspace}
+
+%:Para mejorar la apariencia de las fracciones en una fórmula dentro de un texto
+\usepackage{nicefrac}    % \nicefrac{2}{3}
+
+%:Para que la separación de la coma decimal sea correcta
+\usepackage{icomma}  
+
+%:Para que las comillas queden diferentes
+\usepackage{csquotes}
+
+%:Para incluir acentos especiales
+%\usepackage{ipa}
+
+%%:Para utilizar algunos logos
+%\usepackage{dtklogos}
+
+%:Para que no haya guiones en algunas cosas
+\usepackage{hyphenat}
+
+%:Para mostrar el layout del documento
+ \usepackage{layout}
+
+%:Para incluir una marca de agua dónde interese
+\usepackage[some,bottom]{background}
+
+%:Para que se numeren hasta las subsecciones
+\setcounter{secnumdepth}{4}
+
+% FJPS Modificación para la nueva versión de LuaTeX
+%:Control de índices y superíndices
+\ifluatex
+	% control de índices y superíndices para las ecuaciones en línea
+	\everymath=\expandafter{\the\everymath\Umathsubshiftdown\textstyle=2.5pt}
+	\everymath=\expandafter{\the\everymath\Umathsubshiftdrop\textstyle=2.5pt}
+	\everymath=\expandafter{\the\everymath\Umathsubsupshiftdown\textstyle=2.5pt}
+	\everymath=\expandafter{\the\everymath\Umathsupshiftup\textstyle=4pt}
+	\everymath=\expandafter{\the\everymath\Umathsupshiftdrop\textstyle=2.5pt}
+
+	% control de índices y superíndices para las ecuaciones display
+	\everydisplay=\expandafter{\the\everydisplay\Umathsubshiftdown\displaystyle=2.5pt}
+	\everydisplay=\expandafter{\the\everydisplay\Umathsubshiftdrop\displaystyle=2.5pt}
+	\everydisplay=\expandafter{\the\everydisplay\Umathsubsupshiftdown\displaystyle=2.5pt}
+	\everydisplay=\expandafter{\the\everydisplay\Umathsupshiftup\displaystyle=4pt}
+	\everydisplay=\expandafter{\the\everydisplay\Umathsupshiftdrop\displaystyle=2.5pt}
+	
+	%Una redefinición del comando \xb para utilizar, por ejemplo, en g\xb{I_{n}} y que quede mejor. La utilización de \sb en lugar de \xb provocaba problemas con el comando \url de las nuevas versiones
+	\makeatletter
+	\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}
+	\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}
+	\makeatother
+	\newcommand{\xb}[1]{\ensuremath{_{\raisemath{-1.5pt}{#1}}}}
+\else
+	\everymath{%
+	\fontdimen16\textfont2=2.5pt
+	\fontdimen17\textfont2=2.5pt
+	\fontdimen14\textfont2=4pt
+	\fontdimen13\textfont2=4pt 
+	}
+	\let\xb\sb
+\fi
+
+%:Creando el superíndice y el subíndice en modo texto
+\ifluatex
+	\newcommand{\tsp}[1]{\textsuperscript{\fontsize{8}{9.6}\titulartoc#1}}
+	\newcommand{\tsb}[1]{\textsubscript{\fontsize{8}{9.6}\titulartoc#1}}
+\else
+	\newcommand{\tsp}[1]{\textsuperscript{#1}}
+	\newcommand{\tsb}[1]{\textsubscript{#1}}
+\fi
+
+%:Para escribir los epígrafos. 
+\usepackage{epigraph}
+\setlength{\epigraphwidth}{8cm}
+\setlength{\epigraphrule}{0pt}
+\renewcommand{\textflush}{flushepinormal}
+
+\makeatletter			%% El texto
+\renewcommand{\@epitext}[1]
+	{%
+	\begin{minipage}{\epigraphwidth}
+		\begin{\textflush} \itshape #1\\
+		\ifdim\epigraphrule>\z@ \@epirule \else \vspace*{1ex} \fi
+		\end{\textflush}
+	\end{minipage}
+	}
+\makeatother
+
+\makeatletter			%% El autor
+\renewcommand{\@episource}[1]
+	{%
+	\begin{minipage}{\epigraphwidth}
+		\begin{\sourceflush} \scshape #1\end{\sourceflush}
+	\end{minipage}
+	}	
+\makeatother
+
+%:Para poner la primera letra en grande
+\usepackage{lettrine}
+\renewcommand*{\LettrineTextFont}{\normalfont}
+\renewcommand{\LettrineFontHook}{\color[gray]{0.1}}
+
+%:Para crear una tabla de contenidos abreviada
+\usepackage[tight]{shorttoc}
+  
+%:Creando las marcas registradas de Matlab y Simulink
+\newcommand{\matlab}{MATLAB\tsp{\textregistered} }
+\newcommand{\simulink}{SIMULINK\tsp{\textregistered} }
+
+%:Sugerencias de partición silábica
+\hyphenation{in-alám-bri-cas in-ter-o-pe-ra-ble ci-vil dis-po-si-ti-vo FPGAs FPGA
+de-sa-rro-llo di-gi-tal-men-te po-si-bi-li-da-des con-si-de-rar-se
+Xi-linx di-fe-ren-tes Tool-bo-xes ob-te-ner si-mu-la-tor
+es-cri-tu-ra va-lo-res ins-truc-cio-nes con-cu-rren-tes
+di-fe-ren-tes re-a-li-za-do ma-ne-ra}
+
+%:Para realizar notaciones en el texto
+\usepackage[spanish, shadow]{todonotes}
+\newcommand{\nota}[1]{\todo[color=green!40, noline]{#1}}
+\newcommand{\faltafigura}[1]{\missingfigure{#1}}
+\setlength{\marginparwidth}{3cm}
+
+%:Para que las listas  enumeradas puedan manejarse de forma diferente
+\usepackage{enumitem}					
+
+%:Un nuevo comando para hacer listas numeradas dentro de cajas con mdframed
+\newcommand{\MyItem}{\item}
+
+\newtoggle{FirstItem}%
+\toggletrue{FirstItem}%
+\newenvironment{MyEnumerate}[1][]{%
+    \renewcommand{\MyItem}{%
+        \iftoggle{FirstItem}{%
+            \global\togglefalse{FirstItem}
+            %--------- start new frame
+            \begin{mdframed}[skipbelow=2pt]%
+            \begin{enumerate}[#1,series=MySeries]%
+        }{%
+            \end{enumerate}%
+            \end{mdframed}%
+            %--------- end previous frame and start new one
+            \begin{mdframed}[skipbelow=2pt]%
+            \begin{enumerate}[#1,resume*=MySeries]%
+        }%
+        \item%
+    }%
+}{%
+    \end{enumerate}%
+    \end{mdframed}% --------- end last frame
+    \global\toggletrue{FirstItem}%
+}%
+
+% Para definir entornos parecidos a verbatim
+\usepackage{newverbs}[2011/07/23]
+\newcommand{\ttcolorv}{\collectverb{\ttcolor}}
+
+%:Para realizar cálculos con los contadores y otras cosas
+\usepackage{calc}
+
+%:Definiendo la hora
+\def\timestring{\begingroup
+	\count0 = \time \divide\count0 by 60
+	\count2 = \count0	% The hour.
+	\count4 = \time \multiply\count0 by 60
+	\advance\count4 by -\count0	% The minute.
+	\ifnum\count4<10 \toks1 = {0}% Get a leading zero.
+	\else	\toks1 = {}%
+	\fi 
+	\ifnum\count2<12 \toks0 = {a.m.}%
+	\else	\toks0 = {p.m.}%
+		\advance\count2 by -12 
+	\fi
+	\ifnum\count2=0 \count2 = 12 \fi % Make midnight ?12?.
+	\number\count2:\the\toks1  \number\count4
+	\thinspace \the\toks0
+\endgroup}%
+
+%:Para el formato y la inclusión de las figuras 
+\usepackage{graphicx}
+
+%:Para establecer la distancia por arriba (o por abajo) de los elementos flotantes del texto
+%http://tex.stackexchange.com/questions/39867/intextsep-gives-doubled-space
+\setlength{\intextsep}{1\baselineskip}
+\setlength{\textfloatsep}{1\baselineskip}
+\makeatletter
+\patchcmd{\@addtocurcol}%
+    {\ifnum\outputpenalty <-\@Mii \vskip -\parskip\fi}%
+    {}%
+    {\typeout{*** SUCCESS ***}}{\typeout{*** FAIL ***}}
+
+\patchcmd{\@addtocurcol}%
+    {\vskip \intextsep}%
+    {\addvspace\intextsep
+      \ifnum\outputpenalty <-\@Mii \vskip\parskip\fi}%
+    {\typeout{*** SUCCESS ***}}{\typeout{*** FAIL ***}}
+
+\patchcmd{\@addtocurcol}%
+    {\vskip\intextsep}{\fix@second@intextsep}%
+    {\typeout{*** SUCCESS ***}}%
+    {\typeout{*** FAIL ***}}
+
+\def\fix@second@intextsep {%
+% was the float seen in vertical mode?
+   \ifnum\outputpenalty <-\@Mii 
+      \aftergroup\vskip\aftergroup\intextsep
+      \aftergroup\nointerlineskip
+  \else
+      \vskip\intextsep
+  \fi
+}
+
+\patchcmd{\float@endH}{\vskip\intextsep}%
+      {\addvspace\intextsep\ifnum\outputpenalty <-\@Mii \vskip\parskip\fi}{}{}
+\patchcmd{\float@endH}{\@currbox\vskip\intextsep}%
+      {\@currbox\vskip7.5pt\def\fix@second@intextsep}{}{}
+      
+\makeatother
+      
+%:Para manejar adecuadamente los captions de las figuras y tablas
+\usepackage{caption}[2013/02/03]
+\DeclareCaptionLabelFormat{esisf}{\aheadteoremas{#1} \aheadteoremas{#2} }
+\DeclareCaptionLabelSeparator{cuadratin}{\hspace*{3pt}}
+\captionsetup{labelformat=esisf, textfont=normalfont, textformat=period, labelsep=cuadratin, format=hang, indention=0 cm,skip=10pt, labelformat=esisf}
+
+%:Para incluir subfiguras
+\usepackage{subfig}
+\DeclareCaptionLabelFormat{subfig}{\aheadteoremas{#1} \aheadteoremas{(#2)} }
+\captionsetup[subfigure]{labelformat=subfig }
+\def\sfx#1{\reffont{-\subref{#1}}}
+
+%:Para que los objetos flotantes (tablas y figuras) puedan manejarse mejor
+\usepackage{floatrow} 
+\usepackage[figuresright]{rotating}	% Permite rotar figuras que ocupen una página horizontal
+
+%:Para tablas que ocupan más de una página
+\usepackage{longtable} 
+\floatsetup[table]{style=plaintop}
+
+%:Para que el nombre de la tabla en longtable quede bien
+\makeatletter
+\renewcommand{\LT@makecaption}[3]{%
+  \LT@mcol\LT@cols c{\hbox to\z@{\hss\parbox[t]\LTcapwidth{%
+    \sbox\@tempboxa{%
+      {\@captionheadfont#1{#2}}.%
+      \@captionfont\upshape\enspace#3}%
+    \ifdim\wd\@tempboxa>\hsize
+      {\@captionheadfont#1{#2}}.%
+      \@captionfont\upshape\enspace#3%
+    \else
+      \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+    \fi
+    \endgraf\vskip\baselineskip}%
+  \hss}}}
+\makeatother 
+
+%:Para la bibliografía
+%\usepackage[backend=biber, citestyle=citfjps, bibstyle=bibfjps, mergedate=basic, language=english, texencoding=ascii]{biblatex}
+%\usepackage[backend=biber, style=ieee, mergedate=basic, language=english]{biblatex}
+
+
+%:Para permitir escribir en varias columnas
+\usepackage{multicol}
+
+%:Para crear índices
+\usepackage[texindy]{imakeidx}[2012/05/09]
+
+%:Redefine el entorno theindex creado por makeindex 
+\makeatletter
+    \renewenvironment{theindex}
+      {
+       \if@twocolumn\@restonecolfalse\else\@restonecoltrue\fi
+       \setlength{\columnseprule}{0pt}
+       \setlength{\columnsep}{10pt}             
+       \begin{multicols}{3}[\chapter*{\indexname}]
+       		\pagestyle{especial} 
+       		\setlength{\parindent}{0pt}
+       		\setlength{\parskip}{0pt plus 0.3pt}
+       		\relax
+       		\let\item\@idxitem}%
+      {\end{multicols}\if@restonecol\onecolumn\else\clearpage\fi}
+\makeatother
+\newcommand*{\lettergroup}[1]{\aheadsubsecc#1\normalfont\vspace{5pt}\nopagebreak}
+
+\makeatletter
+\renewcommand\@idxitem{\footnotesize\par\hangindent 5\p@}         
+\renewcommand\subitem{\footnotesize\@idxitem \hspace*{10\p@}}         
+\renewcommand\subsubitem{\footnotesize\@idxitem \hspace*{20\p@}}      
+\makeatother
+
+%:Para definir algo e incluirlo en el índice
+\newcommand{\indexit}[1]{\emph{#1}\index{{#1}}}
+\newcommand{\ind}[1]{{#1}\index{#1}}
+
+%:Para crear glosarios
+\makeatletter
+\ifdtsc@English
+	\usepackage[acronym]{glossaries}
+\else
+	\usepackage[spanish]{translator}
+	\usepackage[acronym]{glossaries}
+\fi
+\makeatother
+
+%:Para que se numeren las fórmulas al nivel de capítulo
+\numberwithin{equation}{chapter}
+
+%:Para cancelar algo dentro de una fórmula
+\usepackage{cancel}
+
+%:Para poner matrices con ''borde''
+\usepackage{kbordermatrix}
+
+%:Para que las fórmulas largas (wide) tengan el número de ecuación en su sitio. Un bug de LuaLatex
+\usepackage{environ}
+
+\NewEnviron{equationw}{
+\begin{equation}\begin{split}
+\BODY
+\end{split}\end{equation}
+}
+
+%:Para formatear arrays
+\usepackage{array}
+
+%:Para modificar determinados problemas con los límites inferiores de sumatorios y otras cosas
+% Mirar el documento mathmode de texlive pág 63-64
+\def\mathllap{\mathpalette\mathllapinternal}
+\def\mathllapinternal#1#2{%
+	\llap{$\mathsurround=0pt#1{#2}$}% $
+}
+\def\clap#1{\hbox to 0pt{\hss#1\hss}}
+\def\mathclap{\mathpalette\mathclapinternal}
+\def\mathclapinternal#1#2{%
+	\clap{$\mathsurround=0pt#1{#2}$}%
+}
+\def\mathrlap{\mathpalette\mathrlapinternal}
+\def\mathrlapinternal#1#2{%
+	\rlap{$\mathsurround=0pt#1{#2}$}% $
+}
+
+%:Para crear los hiperenlaces
+\usepackage{hyperref}
+\hypersetup
+	{
+  	bookmarks=true,
+      bookmarksnumbered=false,
+      bookmarksopen=false,	
+      unicode = true,
+	colorlinks=true,
+	linktoc=all,
+	hyperfootnotes=true,
+	urlbordercolor=black,
+	plainpages=false,
+	pdfpagemode=UseOutlines,
+	pdfview=FitH,
+	pdfstartview=FitH,
+	linkcolor=refcolor,
+	breaklinks=true,
+	citecolor=refcolor,
+      anchorcolor=black,
+	urlcolor=refcolor,
+	pdfdisplaydoctitle=true
+	}
+
+%:Para detectar el número total de páginas
+\usepackage{zref-lastpage,zref-user}[2012/04/04]
+
+%:Para evitar un grave problema al generar el índice con LaTeX
+\makeatletter
+	\appto{\appendices}{\def\Hy@chapapp{Appendix}}
+\makeatother
+
+%:Para generar los PDF con determinadas características
+\usepackage[open, openlevel=2, atend]{bookmark}[2010/04/08]
+
+\bookmarksetup{color=blue}
+
+\BookmarkAtEnd{% 
+	\bookmarksetup{startatroot}% 
+	\bookmark[named=LastPage, level=0]{End/Last page}% 
+	\bookmark[named=FirstPage, level=1]{First page}%
+}
+	
+%:Para cambiar el estilo de las URL
+\makeatletter
+\def\url@leostyle{%
+  \@ifundefined{selectfont}{\def\UrlFont{\sf}}{\def\UrlFont{\itshape\mdseries\color{blue}}}}
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\urlstyle{leo}
+
+%:Para romper los url
+\usepackage{breakurl}
+
+%:Paquete para el listado de códigos y los ajustes necesarios.
+\usepackage{listings}
+\lstset{language=TeX}
+%\lstset{language=Matlab}
+\lstset{flexiblecolumns=true}
+\lstset{backgroundcolor=\color{black!10}}
+%\lstset{backgroundcolor=\color{Matlabcolor}}
+\lstset{tabsize=2}
+\lstset{aboveskip=12pt}
+\lstset{belowcaptionskip=7pt}
+\lstset{showstringspaces=false}
+%\lstset{rulecolor=\color{black!10}, frame=single, framerule=3pt}
+\lstset{
+basicstyle=\ttfamily,
+captionpos=t,
+frame=top,
+frame=bottom,
+framerule=0.4pt,
+xleftmargin=6pt,
+framexleftmargin=6pt,
+xrightmargin=6pt,
+framexrightmargin=6pt,
+breaklines=true
+}
+\ifluatex
+\else
+\lstset{literate=%
+    {á}{{\'a}}1
+    {é}{{\'e}}1
+    {í}{{\'i}}1
+    {ó}{{\'o}}1
+    {ú}{{\'u}}1
+    {Á}{{\'A}}1
+    {É}{{\'E}}1
+    {Í}{{\'I}}1
+    {Ó}{{\'O}}1
+    {Ú}{{\'U}}1
+    {ñ}{{\~{n}}}1
+    {º}{{\textsuperscript{\b{o}}}}1
+    {ª}{{\textsuperscript{\b{a}}}}1
+    {¿}{{?`}}1
+}
+\fi
+
+%:Por un bug que interpreta mal algunos comandos de matlab si está en español
+\makeatletter
+\ifdtsc@English
+	\def\lstlistingname{Code}
+	\def\lstlistlistingname{Codes}	
+	\def\lstlistlistingname{List of Codes}
+\else
+	\def\spanishplainpercent{\let\es@sppercent\@empty}
+	\def\spanishpercent{\def\es@sppercent{\unskip\textormath{$\m@th\,$}{\,}}}
+
+	\AtBeginEnvironment{lstlisting}
+	{%
+		\selectlanguage{english}
+		\def\chaptername{Capítulo}
+		\def\figurename{Figura}
+		\def\lstlistingname{Código}
+		\spanishplainpercent
+	}
+
+	\AfterEndEnvironment{lstlisting}
+	{%
+		\selectlanguage{spanish}
+		\def\lstlistingname{Código}
+		\def\figurename{Figura}
+	}
+
+	\AtEndEnvironment{lstlisting}{\spanishpercent}
+\fi
+\makeatother
+
+%:Para formatear el caption de los listados de código
+\DeclareCaptionFormat{listing}{\rule{\dimexpr\textwidth\relax}{0.4pt}\par\vskip1pt#1#2#3}
+\captionsetup[lstlisting]{format=listing,singlelinecheck=false, margin=0pt, font={sf},labelsep=space,labelfont=bf}
+
+%:Para cambiar la lista de los códigos en la lista de códigos
+\makeatletter
+	\renewcommand*{\l@lstlisting}[2]{\@dottedtocline{1}{.1em}{2.8em}{\tocsecc #1}{\tocsecc #2}}
+\makeatother
+
+%:Para evitar que el número de página se resetee 
+%\makeatletter
+%\def\pagenumbering#1{%
+%  \gdef\thepage{\csname @#1\endcsname \c@page}}
+%\makeatother
+%
+
+%:Entornos, teoremas y similares
+%:Para cajas sombreadas que puedan romperse en varias páginas 
+\usepackage[framemethod=TikZ]{mdframed}
+\newmdenv[%
+    backgroundcolor=black!10,
+    linecolor=black!10,
+    outerlinewidth=0 pt,
+    roundcorner=0mm,
+    skipabove=\baselineskip,
+    skipbelow=\baselineskip,
+    splittopskip=16pt, splitbottomskip=16pt
+]{caja}
+
+\newmdenv[%
+    outerlinewidth=0.5pt,
+    skipabove=\baselineskip,
+    skipbelow=\baselineskip,
+    shadow=true,
+    shadowsize=0.5em,
+    shadowcolor=black
+]{cajablanca}
+
+%:Resumen
+%Un entorno para hacer posibles resúmenes, con el nombre que queramos. Puesto que el cambio de estilo de páginas se hace dentro de un entorno (grupo), no debemos preocuparnos por la página que existía, que se recupera al salir del entorno. 
+\newcommand{\nombreresumen}{}					% Para utilizar el nombre del resumen en la cabecera
+\newenvironment{Resumen}[1][\summaryname]{%	% Por defecto el nombre es Resumen
+	\gdef\nombreresumen{#1}
+	\pagestyle{Resumen}
+	\phantomsection
+	\addcontentsline{toc}{subsection}{#1}
+	\begin{caja}
+	\misection*{#1}
+}%
+{%
+	\end{caja}
+}
+
+%:Para los teoremas
+\usepackage[thmmarks,amsmath,noconfig,hyperref, framed]{ntheorem}
+
+\newcommand{\reglasup}{\medskip{\color{light-gray}\hrule width\textwidth height 4pt}}
+\newcommand{\reglainf}{{\color{light-gray}\hrule width\textwidth height 4pt}\medskip}
+
+\theoremnumbering{arabic}
+\theoremheaderfont{\aheadteoremas}
+\theoremseparator{\hspace{.2em}}
+\theorembodyfont{\itshape}
+\newtheorem{teor}{\theoremname}[section]
+\newtheorem{lema}{\lemmaname}[section]
+\newtheorem{prop}{\propertyname}[section]
+\newtheorem{coro}{\corollaryname}[teor]
+\newtheorem{corm}{\corollaryname}[lema]
+
+\theoremnumbering{arabic}
+\theoremseparator{\hspace{.2em}}
+\theorembodyfont{\normalfont}
+\theoremheaderfont{\aheadteoremas}%{\normalfont\bfseries}
+\newtheorem{defn}{\definitionname}[section]
+
+\theoremstyle{nonumberplain}
+\theoremheaderfont{\aheadpruebas}%{\itshape\bfseries}
+\theorembodyfont{\normalfont}
+\theoremsymbol{\ensuremath{\blacksquare}}
+\theoremseparator{.}
+\newtheorem{demo}{\proofname}
+\newtheorem{proof}{\proofname}
+\qedsymbol{\ensuremath{\blacksquare}}
+
+\theoremstyle{plain}
+\theoremsymbol{}
+\qedsymbol{}
+\theoremheaderfont{\aheadteoremas}
+\theoremseparator{}
+\theorembodyfont{\normalfont}
+\theoremprework{\reglasup} 
+\newtheorem{ejmp}{\examplename}[section]
+
+\theoremstyle{plain}
+\theoremsymbol{}
+\qedsymbol{}
+\theoremheaderfont{\aheadteoremas}
+\theoremseparator{}
+\theorembodyfont{\normalfont}
+\newtheorem{ejmpn}[ejmp]{\examplename}
+
+\theoremstyle{nonumberplain}
+\theoremheaderfont{\aheadpruebas}
+\theorembodyfont{\normalfont}
+\theoremstyle{nonumberplain}
+\theorempostwork{\reglainf}
+\theoremseparator{.}
+\theoremsymbol{}
+\qedsymbol{\ensuremath{\square}}
+\newtheorem{sol}{\solutionname}
+
+\theoremstyle{nonumberplain}
+\theoremheaderfont{\aheadpruebas}
+\theorembodyfont{\normalfont}
+\theoremstyle{nonumberplain}
+\theoremseparator{.}
+\theoremsymbol{\ensuremath{\square}}
+\qedsymbol{\ensuremath{\square}}
+\newtheorem{Soln}{\solutionname}
+\newtheorem{soln}{\solutionname}
+
+%:Entorno solución numerada (solnum)
+\makeatletter
+\newenvironment{solnum}{\noindent \makebox[\linewidth][l]{\itshape\bfseries{Solución\@addpunct{.}}}\par\begin{enumerate}%
+}
+{\end{enumerate}}
+\makeatother
+
+\theoremstyle{margin}
+\theoremsymbol{}
+\qedsymbol{}\theoremnumbering{arabic}
+\theoremheaderfont{\aheadteoremas}
+\theoremseparator{\hspace{-1em}}
+\theorembodyfont{\normalfont}
+\newtheorem{prob}{}[chapter]
+
+%:Definiendo los comandos \itemv  \itmea para los entornos numéricos
+\newcommand{\itemv}[1][14]{\item \rule{0pt}{1pt}\vspace*{-#1pt}} 
+\newcommand{\itema}[1][18]{\rule{0pt}{1pt}\vspace*{-#1pt}\item}
+
+%:Definiendo el comando \itemj para ciertos entornos numéricos
+\newcommand{\itemj}[1][\quad]{\item #1} 
+
+%:Definiendo un entorno para ajustar la separación vertical de los entornos controlados por \arraystretch
+\newenvironment{mathvertical}[1][1.25]
+{
+\renewcommand\arraystretch{#1}
+}
+
+%:Definición de algunos comandos a utilizar en \frontmatter 
+\makeatletter
+\def\dedicatoria#1{
+    \cleardoublepage
+    \thispagestyle{empty}
+    \vspace*{0.2\textheight}
+    \begin{flushright}
+    {\emph{#1}}
+    \end{flushright}
+    \clearpage
+	}
+\makeatother
+
+%:Para la cabecera de los exámenes
+\long\def\titulacion#1{\def\fromtitulacion{#1}}
+\long\def\asignatura#1{\def\fromasignatura{#1}}
+\long\def\convocatoria#1{\def\fromconvocatoria{#1}}
+\long\def\fecha#1{\def\fromfecha{#1}}
+%
+
+%:Para poner en color comandos y otras cosas
+\newcommand{\ttcolorc}[1]   %Texto de comandos en color
+{
+\ignorespaces\begingroup
+	\leavevmode\unskip\color{Crimson}\textbackslash\tt{\ignorespaces#1}\ignorespaces
+\endgroup
+}		
+
+\newcommand{\comandos}[2] %Texto de comandos con llaves en color
+{
+\begingroup
+	\leavevmode\unskip\color{Crimson}\textbackslash\texttt\ignorespaces#1\{\tt{\ignorespaces#2}\}\ignorespaces
+\endgroup
+}
+
+\newcommand{\comando}[1] %Texto de comandos con llaves en color
+{
+\begingroup
+	\leavevmode\unskip\color{Crimson}\textbackslash\texttt\ignorespaces#1\ignorespaces
+\endgroup
+}
+
+\newcommand{\ttcolor}[1]  %Texto en color SIN comandos
+{
+\ignorespaces\begingroup
+	\leavevmode\unskip\color{Crimson}\texttt{\ignorespaces#1}\ignorespaces
+\endgroup
+}		
+
+\endinput
+% Fin de libroETSI.sty
