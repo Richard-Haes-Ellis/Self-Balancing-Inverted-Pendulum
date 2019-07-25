@@ -8,7 +8,7 @@ Debug/*
 .vscode/*
 *.ipch
 
-esp8266/main/build/*
+build/
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
