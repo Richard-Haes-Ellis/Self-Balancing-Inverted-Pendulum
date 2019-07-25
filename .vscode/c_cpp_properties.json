@@ -3,14 +3,17 @@
         {
             "name": "Linux",
             "includePath": [
+                "/home/pirana/Arduino/libraries/Adafruit_ADS1X15",
                 "/home/pirana/.arduino15/packages/esp8266/tools/**",
-                "/home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/**"
+                "/home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/**",
+                "/home/pirana/Arduino/libraries/**"
             ],
-            "forcedInclude": [],
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++17",
+            "macFrameworkPath": [],
+            "forcedInclude": []
         }
     ],
     "version": 4
