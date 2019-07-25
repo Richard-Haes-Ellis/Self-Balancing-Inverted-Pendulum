@@ -1,0 +1,13 @@
+Péndulo inverso con volante de reacción
+
+
+
+Péndulo inverso con disco:
+	http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.35.9204&rep=rep1&type=pdf
+Sobre péndulo inverso:
+	http://robotics.ee.uwa.edu.au/theses/2003-Balance-Ooi.pdf
+Sobre fricción:
+	http://www.mogi.bme.hu/TAMOP/robot_applications/ch07.html
+
+Complementary filter for roll and pitch angle estimation
+http://www.pieter-jan.com/node/11
