@@ -11,3 +11,12 @@ Sobre fricción:
 
 Complementary filter for roll and pitch angle estimation
 http://www.pieter-jan.com/node/11
+
+Pins and info about board 
+https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/
+
+Encoder info
+https://ams.com/as5040
+
+Sorting algorithms
+https://github.com/gibsjose/cpp-cheat-sheet/blob/master/Data%20Structures%20and%20Algorithms.md#40-algorithms
