@@ -3,6 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
+                "/home/pirana/.arduino15/packages/esp32/tools/**",
+                "/home/pirana/.arduino15/packages/esp32/hardware/esp32/1.0.2/**",
                 "/home/pirana/Arduino/libraries/Adafruit_ADS1X15",
                 "/home/pirana/.arduino15/packages/esp8266/tools/**",
                 "/home/pirana/.arduino15/packages/esp8266/hardware/esp8266/2.5.0/**",
