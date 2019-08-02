@@ -10,6 +10,11 @@ const uint8_t motorBdir = 27;
 const uint8_t motorAPWM = 25; // Digital PWM pins
 const uint8_t motorBPWM = 32;
 
+const int32_t channel0 = 0;
+const int32_t channel1 = 1;
+const int32_t channel2 = 2;
+const int32_t channel3 = 3;
+
 void setup() {
   delay(5000);
   Serial.begin(9600);
@@ -21,31 +26,44 @@ void setup() {
   pinMode(encdr_X_channel_B_Pin,INPUT_PULLUP);
   pinMode(encdr_Y_channel_A_Pin,INPUT_PULLUP);
   pinMode(encdr_Y_channel_B_Pin,INPUT_PULLUP);
+
+  ledcSetup(channel0, 5000, 8);
+  ledcSetup(channel1, 5000, 8);
+  ledcSetup(channel2, 5000, 8);
+  ledcSetup(channel3, 5000, 8);
+  ledcAttachPin(motorAPWM,channel0);
+  ledcAttachPin(motorBPWM,channel1);
+  ledcAttachPin(motorAdir,channel2);
+  ledcAttachPin(motorBdir,channel3);
 }
 
 void loop() {
-  if(digitalRead(encdr_X_channel_A_Pin)==LOW){
-    Serial.println("encoder pin 1A");
-  }
-  if(digitalRead(encdr_X_channel_B_Pin)==LOW){
-    Serial.println("encoder pin 1B");
-  }
-  if(digitalRead(encdr_Y_channel_A_Pin)==LOW){
-    Serial.println("encoder pin 2A");
-  }
-  if(digitalRead(encdr_Y_channel_B_Pin)==LOW){
-    Serial.println("encoder pin 2B");
-  }  
-  digitalWrite(motorAdir,HIGH);
-  digitalWrite(motorBdir,HIGH);
-  digitalWrite(motorAPWM,HIGH);
-  digitalWrite(motorAPWM,HIGH);
-  delay(1000);
-  digitalWrite(motorAdir,HIGH);
-  digitalWrite(motorBdir,HIGH);
-  digitalWrite(motorAPWM,HIGH);
-  digitalWrite(motorAPWM,HIGH);
-  delay(1000);
+  
+  ledcWrite(channel0,20);
+  ledcWrite(channel1,20);
+  ledcWrite(channel2,20);
+  ledcWrite(channel3,20);
+  delay(100);
+  ledcWrite(channel0,40);
+  ledcWrite(channel1,40);
+  ledcWrite(channel2,40);
+  ledcWrite(motorBPWM,40);
+  delay(100);
+  ledcWrite(channel0,80);
+  ledcWrite(channel1,80);
+  ledcWrite(channel2,80);
+  ledcWrite(channel3,80);
+  delay(100);
+  ledcWrite(channel0,120);
+  ledcWrite(channel1,120);
+  ledcWrite(channel2,120);
+  ledcWrite(channel3,120);
+  delay(100);
+  ledcWrite(channel0,180);
+  ledcWrite(channel1,180);
+  ledcWrite(channel2,180);
+  ledcWrite(channel3,180);
+  delay(100);
 }
 
 
