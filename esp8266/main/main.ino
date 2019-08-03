@@ -17,14 +17,14 @@ const uint8_t encdr_X_channel_B_Pin = 26;
 const uint8_t encdr_Y_channel_A_Pin = 33;
 const uint8_t encdr_Y_channel_B_Pin = 13;
 // Outputs
-const uint8_t motorAdir = 4; // Digital direction pins
-const uint8_t motorBdir = 27;
-const uint8_t motorAPWM = 25; // Digital PWM pins
-const uint8_t motorBPWM = 32;
+const uint8_t motor_A_dir_Pin = 4; // Digital direction pins
+const uint8_t motor_B_dir_Pin = 27;
+const uint8_t motor_A_PWM_Pin = 25; // Digital PWM pins
+const uint8_t motor_B_PWM_Pin = 32;
 
 // AS5040 Encoder variables
-int32_t encdr_X_tick;
-int32_t encdr_Y_tick;
+int32_t encdr_X_tick = 0;
+int32_t encdr_Y_tick = 0;
 float sensorValuesA[SIZEFILT];
 float sensorValuesB[SIZEFILT];
 
@@ -56,6 +56,8 @@ const uint8_t MPU6050_REGISTER_SIGNAL_PATH_RESET = 0x68;
 // ADC configuration values
 uint32_t m_conversionDelay = 8; // 8ms for conversion time
 int16_t adc2, adc3;
+float volts_Sensor_x;
+float volts_Sensor_y;
 // Info pulled from ADC1015 datasheet
 const uint8_t ADS1015SlaveAddress = 0x48; // ADS1015 Slave Device Address
 const uint8_t ADS1015_REG_POINTER_CONVERT = 0x00;
@@ -118,6 +120,18 @@ const uint8_t ADS1015_REG_POINTER_CONFIG = 0x01;
                     11 : Disable comparator and set ALERT/RDY pin to high-impedance (default)
 */
 
+void IRAM_ATTR encdr_X_channel_A_InterruptHandler();
+void IRAM_ATTR encdr_X_channel_B_InterruptHandler();
+void IRAM_ATTR encdr_Y_channel_A_InterruptHandler();
+void IRAM_ATTR encdr_Y_channel_B_InterruptHandler();
+void I2C_Write(uint8_t deviceAddress, uint8_t regAddress, uint8_t data);
+static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg);
+void ComplementaryFilter(short accData[3], short gyrData[3], float *pitch, float *roll);
+float modeFilter(float val, float *vec);
+int16_t get_ADS115_Channel(uint8_t channel);
+void MPU6050_Init();
+void Read_RawValue(uint8_t deviceAddress, uint8_t regAddress);
+
 /* GENERAL SETUP */
 void setup()
 {
@@ -130,6 +144,10 @@ void setup()
   pinMode(encdr_X_channel_B_Pin, INPUT);
   pinMode(encdr_Y_channel_A_Pin, INPUT);
   pinMode(encdr_Y_channel_B_Pin, INPUT);
+  pinMode(motor_A_dir_Pin,OUTPUT);
+  pinMode(motor_B_dir_Pin,OUTPUT);
+  pinMode(motor_A_PWM_Pin,OUTPUT);
+  pinMode(motor_B_PWM_Pin,OUTPUT);
   attachInterrupt(digitalPinToInterrupt(encdr_X_channel_A_Pin), encdr_X_channel_A_InterruptHandler, CHANGE);
   attachInterrupt(digitalPinToInterrupt(encdr_X_channel_B_Pin), encdr_X_channel_B_InterruptHandler, CHANGE);
   attachInterrupt(digitalPinToInterrupt(encdr_Y_channel_A_Pin), encdr_Y_channel_A_InterruptHandler, CHANGE);
@@ -168,10 +186,14 @@ void loop()
 
     // From AS5040
 
-    /* ############### Filter data ############### */
+    /* ############### Process data ############### */
 
     // Filering raw angle data from accelerometer
     ComplementaryFilter(accelData, gyroData, &x_Angle, &y_Angle);
+
+    // Calculate Voltage from ADC
+    volts_Sensor_x = (float)((-(2*6.144)/65536)*adc2+6.144);
+    volts_Sensor_y = (float)((-(2*6.144)/65536)*adc3+6.144);
 
     /* ############### Display data ############### */
      
@@ -180,9 +202,13 @@ void loop()
     Serial.print(" \tAngle b: ");
     Serial.print(y_Angle - y_Offset);
     Serial.print(" \tADC1: ");
-    Serial.print(adc2);
+    Serial.print(volts_Sensor_x);
     Serial.print(" \tADC2: ");
-    Serial.print(adc3);
+    Serial.print(volts_Sensor_y);
+    Serial.print(" \tX_Tick: ");
+    Serial.print(encdr_X_tick);
+    Serial.print(" \tY_Tick: ");
+    Serial.print(encdr_Y_tick);
     Serial.print(" \tLoop_T: ");
     Serial.println(loopTime);
 
@@ -298,72 +324,72 @@ void ComplementaryFilter(short accData[3], short gyrData[3], float *pitch, float
 }
 
 /* ENCODER X INTERRUPT HANDLER CHANNEL A */
-void encdr_X_channel_A_InterruptHandler()
+void IRAM_ATTR encdr_X_channel_A_InterruptHandler()
 {
   if(digitalRead(encdr_X_channel_A_Pin)){     // If A is rising
     if(!digitalRead(encdr_X_channel_B_Pin)){  // and B is LOW
-      encdr_X_tick++;                 // then disc is going CW
-    }else{                            // or if B is High
-      encdr_X_tick--;                 // then disc is going CCW
+      encdr_X_tick++;                         // then disc is going CW
+    }else{                                    // or if B is High
+      encdr_X_tick--;                         // then disc is going CCW
     }
-  }else{                              // If is A falling
+  }else{                                      // If is A falling
     if(digitalRead(encdr_X_channel_B_Pin)){   // and B is HIGH
-      encdr_X_tick++;                 // then disc is going CW
-    }else{                            // or if B is LOW
-      encdr_X_tick--;                 // then disc is going CCW
+      encdr_X_tick++;                         // then disc is going CW
+    }else{                                    // or if B is LOW
+      encdr_X_tick--;                         // then disc is going CCW
     }
   }
 }
 
 /* ENCODER X INTERRUPT HANDLER CHANNEL B */
-void encdr_X_channel_B_InterruptHandler()
+void IRAM_ATTR encdr_X_channel_B_InterruptHandler()
 {
   if(digitalRead(encdr_X_channel_B_Pin)){     // If B is rising
     if(digitalRead(encdr_X_channel_A_Pin)){   // and A is LOW
-      encdr_X_tick++;                 // then disc is going CW
-    }else{                            // or A is HIGH
-      encdr_X_tick--;                 // then disc is going CCW
+      encdr_X_tick++;                         // then disc is going CW
+    }else{                                    // or A is HIGH
+      encdr_X_tick--;                         // then disc is going CCW
     }
-  }else{                              // If its falling
+  }else{                                      // If its falling
     if(!digitalRead(encdr_X_channel_A_Pin)){  // Going CW
       encdr_X_tick++;
-    }else{                            // Going CCW
+    }else{                                    // Going CCW
       encdr_X_tick--;
     }
   }
 }
 
 /* ENCODER Y INTERRUPT HANDLER CHANNEL A */
-void encdr_Y_channel_A_InterruptHandler()
+void IRAM_ATTR encdr_Y_channel_A_InterruptHandler()
 {
   if(digitalRead(encdr_Y_channel_A_Pin)){     // If A is rising
     if(!digitalRead(encdr_Y_channel_B_Pin)){  // and B is LOW
-      encdr_Y_tick++;                 // then disc is going CW
-    }else{                            // or if B is High
-      encdr_Y_tick--;                 // then disc is going CCW
+      encdr_Y_tick++;                         // then disc is going CW
+    }else{                                    // or if B is High
+      encdr_Y_tick--;                         // then disc is going CCW
     }
-  }else{                              // If is A falling
+  }else{                                      // If is A falling
     if(digitalRead(encdr_Y_channel_B_Pin)){   // and B is HIGH
-      encdr_Y_tick++;                 // then disc is going CW
-    }else{                            // or if B is LOW
-      encdr_Y_tick--;                 // then disc is going CCW
+      encdr_Y_tick++;                         // then disc is going CW
+    }else{                                    // or if B is LOW
+      encdr_Y_tick--;                         // then disc is going CCW
     }
   }
 }
 
 /* ENCODER Y INTERRUPT HANDLER CHANNEL B */
-void encdr_Y_channel_B_InterruptHandler()
+void IRAM_ATTR encdr_Y_channel_B_InterruptHandler()
 {
   if(digitalRead(encdr_Y_channel_B_Pin)){     // If B is rising
     if(digitalRead(encdr_Y_channel_A_Pin)){   // and A is LOW
-      encdr_Y_tick++;                 // then disc is going CW
-    }else{                            // or A is HIGH
-      encdr_Y_tick--;                 // then disc is going CCW
+      encdr_Y_tick++;                         // then disc is going CW
+    }else{                                    // or A is HIGH
+      encdr_Y_tick--;                         // then disc is going CCW
     }
-  }else{                              // If its falling
+  }else{                                      // If its falling
     if(!digitalRead(encdr_Y_channel_A_Pin)){  // Going CW
       encdr_Y_tick++;
-    }else{                            // Going CCW
+    }else{                                    // Going CCW
       encdr_Y_tick--;
     }
   }
