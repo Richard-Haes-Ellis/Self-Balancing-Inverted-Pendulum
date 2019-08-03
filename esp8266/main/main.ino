@@ -8,6 +8,11 @@
 #define LOOPTIME 10000
 uint32_t timer0;
 
+// Test variables
+uint8_t stopTest = 0;
+uint8_t testCycle = 0;
+uint32_t timer1;
+
 // Pin definitions
 // Inputs
 const uint8_t scl = SCL; // SDA and SCL pins for I2C communication
@@ -17,10 +22,12 @@ const uint8_t encdr_X_channel_B_Pin = 26;
 const uint8_t encdr_Y_channel_A_Pin = 33;
 const uint8_t encdr_Y_channel_B_Pin = 13;
 // Outputs
-const uint8_t motor_A_dir_Pin = 4; // Digital direction pins
-const uint8_t motor_B_dir_Pin = 27;
-const uint8_t motor_A_PWM_Pin = 25; // Digital PWM pins
-const uint8_t motor_B_PWM_Pin = 32;
+const uint8_t motor_Y_PWM_Pin  =  4;
+const uint8_t motor_Y_dir1_Pin = 16; 
+const uint8_t motor_Y_dir2_Pin = 17;
+const uint8_t motor_X_PWM_Pin  = 27;
+const uint8_t motor_X_dir1_Pin = 25;
+const uint8_t motor_X_dir2_Pin = 32;
 
 // AS5040 Encoder variables
 int32_t encdr_X_tick = 0;
@@ -53,8 +60,13 @@ const uint8_t MPU6050_REGISTER_INT_ENABLE = 0x38;
 const uint8_t MPU6050_REGISTER_ACCEL_XOUT_H = 0x3B;
 const uint8_t MPU6050_REGISTER_SIGNAL_PATH_RESET = 0x68;
 
+// PWM variables
+const int32_t x_PWM_Channel0 = 0;
+const int32_t y_PWM_Channel1 = 1;
+
+
 // ADC configuration values
-uint32_t m_conversionDelay = 8; // 8ms for conversion time
+uint32_t m_conversionDelay = 5; // 8ms for conversion time
 int16_t adc2, adc3;
 float volts_Sensor_x;
 float volts_Sensor_y;
@@ -120,6 +132,7 @@ const uint8_t ADS1015_REG_POINTER_CONFIG = 0x01;
                     11 : Disable comparator and set ALERT/RDY pin to high-impedance (default)
 */
 
+// The IRAM_ATTR atribute is to store the function in ram so its faster
 void IRAM_ATTR encdr_X_channel_A_InterruptHandler();
 void IRAM_ATTR encdr_X_channel_B_InterruptHandler();
 void IRAM_ATTR encdr_Y_channel_A_InterruptHandler();
@@ -131,6 +144,10 @@ float modeFilter(float val, float *vec);
 int16_t get_ADS115_Channel(uint8_t channel);
 void MPU6050_Init();
 void Read_RawValue(uint8_t deviceAddress, uint8_t regAddress);
+void printDouble( double val, unsigned int precision);
+void MatlabSendDouble(double val);
+void MatlabSendInt(int32_t val);
+uint8_t motorSignal(uint8_t motor,int32_t controlSignal);
 
 /* GENERAL SETUP */
 void setup()
@@ -139,15 +156,26 @@ void setup()
   delay(3000);
   // Start the serial protocol
   Serial.begin(9600);
+  Serial.print("Seting up peripherals.");
   // We declare the ecoder pins as inputs
   pinMode(encdr_X_channel_A_Pin, INPUT);
   pinMode(encdr_X_channel_B_Pin, INPUT);
   pinMode(encdr_Y_channel_A_Pin, INPUT);
   pinMode(encdr_Y_channel_B_Pin, INPUT);
-  pinMode(motor_A_dir_Pin,OUTPUT);
-  pinMode(motor_B_dir_Pin,OUTPUT);
-  pinMode(motor_A_PWM_Pin,OUTPUT);
-  pinMode(motor_B_PWM_Pin,OUTPUT);
+  // We declare the motor pins as Outputs
+  pinMode(motor_X_dir1_Pin,OUTPUT);
+  pinMode(motor_X_dir2_Pin,OUTPUT);
+  pinMode(motor_Y_dir1_Pin,OUTPUT);
+  pinMode(motor_Y_dir2_Pin,OUTPUT);
+  pinMode(motor_X_PWM_Pin,OUTPUT);
+  pinMode(motor_Y_PWM_Pin,OUTPUT);
+  // We setup the pwm channels
+  ledcSetup(x_PWM_Channel0, 20000, 16);
+  ledcSetup(y_PWM_Channel1, 20000, 16);
+  // We attach the motor pwm pins to each channel 
+  ledcAttachPin(motor_X_PWM_Pin,x_PWM_Channel0);
+  ledcAttachPin(motor_Y_PWM_Pin,y_PWM_Channel1);
+  // We attach encoder pins to their interrupt handlers
   attachInterrupt(digitalPinToInterrupt(encdr_X_channel_A_Pin), encdr_X_channel_A_InterruptHandler, CHANGE);
   attachInterrupt(digitalPinToInterrupt(encdr_X_channel_B_Pin), encdr_X_channel_B_InterruptHandler, CHANGE);
   attachInterrupt(digitalPinToInterrupt(encdr_Y_channel_A_Pin), encdr_Y_channel_A_InterruptHandler, CHANGE);
@@ -157,7 +185,7 @@ void setup()
   // We initialize the MPU6050
   MPU6050_Init();
   // Send a Arduino Ready
-  Serial.println("Arduino Ready");
+  Serial.println("Done. Arduino Ready");
   // Small 1s pause before start
   delay(1000);
 }
@@ -184,26 +212,24 @@ void loop()
     adc2 = get_ADS115_Channel(2);
     adc3 = get_ADS115_Channel(3);
 
-    // From AS5040
-
     /* ############### Process data ############### */
 
     // Filering raw angle data from accelerometer
     ComplementaryFilter(accelData, gyroData, &x_Angle, &y_Angle);
 
     // Calculate Voltage from ADC
-    volts_Sensor_x = (float)((-(2*6.144)/65536)*adc2+6.144);
-    volts_Sensor_y = (float)((-(2*6.144)/65536)*adc3+6.144);
+    volts_Sensor_x = (float)(12.288/65536)*adc2;
+    volts_Sensor_y = (float)(12.288/65536)*adc3;
 
     /* ############### Display data ############### */
-     
+    
     Serial.print(" Angle a: ");
     Serial.print(x_Angle - x_Offset);
     Serial.print(" \tAngle b: ");
     Serial.print(y_Angle - y_Offset);
-    Serial.print(" \tADC1: ");
+    Serial.print(" \tV_1: ");
     Serial.print(volts_Sensor_x);
-    Serial.print(" \tADC2: ");
+    Serial.print(" \tV_2: ");
     Serial.print(volts_Sensor_y);
     Serial.print(" \tX_Tick: ");
     Serial.print(encdr_X_tick);
@@ -211,10 +237,42 @@ void loop()
     Serial.print(encdr_Y_tick);
     Serial.print(" \tLoop_T: ");
     Serial.println(loopTime);
-
+    
     // Restart the timer
     timer0 = micros();
   }
+  if(micros()-timer1 > 500000 && stopTest == 0) // 1 second
+  {
+    timer1 = micros();
+    switch(testCycle){
+      case 0:
+      motorSignal(0,0);
+      motorSignal(1,0);
+      break;
+      case 1:
+      motorSignal(1,10000);
+      motorSignal(0,10000);
+      break;
+      case 2:
+      motorSignal(1,0);
+      motorSignal(0,0);
+      break;
+      case 3:
+      motorSignal(1,-10000);
+      motorSignal(0,-10000);
+      break;
+      case 4:
+      motorSignal(1,0);
+      motorSignal(0,0);
+      break;
+    }
+    testCycle++;
+    if(testCycle == 5){
+      stopTest = 0;
+      testCycle = 0;
+    }
+  }
+  
 }
 
 /* FOR WRITING DATA TO I2C LINES */
@@ -428,4 +486,89 @@ float modeFilter(float val, float *vec)
   // If is even we pick the mean value of the two
   return (copyVect[SIZEFILT / 2 - 1] + copyVect[SIZEFILT / 2]) / 2;
 #endif
+}
+
+void MatlabSendInt(int32_t val){
+  union {
+    int32_t variable;
+    byte temp_array[4];
+  } u;
+  
+  u.variable = val;
+
+  for(int i=0;i<4;i++){
+    Serial.write(u.temp_array[i]);
+  }
+  Serial.print("\n");
+}
+
+void MatlabSendDouble(double val){
+  union {
+    double variable;
+    byte temp_array[8];
+  } u;
+  
+  u.variable = 2536.12523;
+
+  for(int i=0;i<8;i++){
+    Serial.write(u.temp_array[8]);
+  }
+  Serial.print("\n");
+}
+
+void printDouble( double val, unsigned int precision){
+   Serial.print (int(val));  //prints the int part
+   Serial.print("."); // print the decimal point
+   unsigned int frac;
+   if(val >= 0)
+       frac = (val - int(val)) * precision;
+   else
+       frac = (int(val)- val ) * precision;
+   Serial.println(frac,DEC) ;
+}
+
+uint8_t motorSignal(uint8_t motor,int32_t controlSignal){
+  // We saturate the input 
+  if(controlSignal<-10000){
+    controlSignal = -10000;
+  }else if(controlSignal > 10000){
+    controlSignal = 10000;
+  }
+  switch(motor){
+    case 0: // beeing 0 the x motor
+      if(controlSignal<0){  // If is negative CCW
+        digitalWrite(motor_X_dir1_Pin,HIGH);
+        digitalWrite(motor_X_dir2_Pin,LOW);
+        ledcWrite(x_PWM_Channel0,(int)controlSignal*-6.5536);
+      }else if(controlSignal>0){  // If its positive CW
+        digitalWrite(motor_X_dir1_Pin,LOW);
+        digitalWrite(motor_X_dir2_Pin,HIGH);
+        ledcWrite(x_PWM_Channel0,(int)controlSignal*6.5536);
+      }else if(controlSignal == 0){ // Thats a full stop (BRAKE)
+        // H-Brige interpetes same inputs as full stop 
+        digitalWrite(motor_X_dir1_Pin,HIGH);
+        digitalWrite(motor_X_dir2_Pin,HIGH);
+        ledcWrite(x_PWM_Channel0,0);
+      }
+    break;
+    case 1: // beeing 1 the y motor
+      if(controlSignal<0){  // If is negative CCW
+        digitalWrite(motor_Y_dir1_Pin,HIGH);
+        digitalWrite(motor_Y_dir2_Pin,LOW);
+        ledcWrite(y_PWM_Channel1,(int)controlSignal*-6.5536);
+      }else if(controlSignal>0){  // If its positive CW
+        digitalWrite(motor_Y_dir1_Pin,LOW);
+        digitalWrite(motor_Y_dir2_Pin,HIGH);
+        ledcWrite(y_PWM_Channel1,(int)controlSignal*6.5536);
+      }else if(controlSignal == 0){ // Thats a full stop (BRAKE)
+        // H-Brige interpetes same inputs as full stop 
+        digitalWrite(motor_Y_dir1_Pin,HIGH);
+        digitalWrite(motor_Y_dir2_Pin,HIGH);
+        ledcWrite(y_PWM_Channel1,0);
+      }
+    break;
+    default:
+    return -1;
+  }
+  return 0;
 }
